@@ -3,12 +3,11 @@
   "compilerOptions": {
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "."
+    "rootDir": ".",
   },
   "exclude": [
     "../../node_modules/**",
     "node_modules/**",
-    "test/**"
+    "test"
   ]
 }

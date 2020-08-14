@@ -1,33 +1,34 @@
-sudo: required
-
 language: node_js
 
 node_js:
+  - "9"
   - "10"
+  - "11"
+  - "12"
+
+branches:
+  only:
+    - master
+    - develop
+    - /^greenkeeper/.*$/
+    - /^feature/.*$/
+    - /^hotfix/.*$/
 
 before_install:
   - npm ci
-  - npm run bootstrap
 
-jobs:
-  include:
-    #############################
-    # Test
-    #############################
-    - stage: Tests
-      name: Unit Test
-      script:
-        - npm run test
-    # #############################
-    # # Build & Deploy
-    # #############################
-    # - stage: Build and Deploy
-    #   name: build and push
-    #   script:
-    #     - npm run build
-    #     - ./bin/npm-github-push.sh
-# notifications:
-#   email: false
-#   slack:
-#     rooms:
-#       - ejnkr:2uRLoxWgV1zOpqFXBXWWA86F#deploy
+script:
+  - npm run bs
+  - npm run lint
+  - npm run test
+  - npm run build
+
+# after_success:
+#   - ./bin/build-deploy-docs.sh
+
+notifications:
+  email:
+    - shun10116@gmail.com
+  slack:
+    rooms:
+      - hi-cordworkspace:EC6Q4SIRTddzUEE0rMDXrSl6#dev-travis

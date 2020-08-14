@@ -1,4 +1,5 @@
 const { defaults } = require('jest-config');
+
 module.exports = {
   preset: 'ts-jest',
   globals: {
@@ -11,14 +12,8 @@ module.exports = {
     },
   },
   transformIgnorePatterns: ['/node_modules'],
-  testMatch: ['<rootDir>/src/**/*.(test|spec).ts?(x)'],
-  moduleFileExtensions: [
-    ...defaults.moduleFileExtensions,
-    'ts',
-    'tsx',
-    'js',
-    'jsx',
-  ],
+  testMatch: ['<rootDir>/test/**/*.(test|spec).ts?(x)'],
+  moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx', 'js', 'jsx'],
   moduleNameMapper: {
     '^@/(.*)': '<rootDir>/src/$1',
   },

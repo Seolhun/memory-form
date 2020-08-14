@@ -12,14 +12,14 @@ if (pkg.peerDependencies) {
 }
 
 export default {
-  input: './src/index.ts',
+  input: './index.ts',
   output: [
     {
       format: 'cjs',
       file: 'dist/index.js',
     },
     {
-			format: 'es',
+      format: 'es',
       file: 'dist/index.esm.js',
     },
     {
@@ -28,10 +28,10 @@ export default {
       plugins: [terser()],
     },
     {
-			format: 'es',
+      format: 'es',
       file: 'dist/index.esm.min.js',
       plugins: [terser()],
-		},
+    },
   ],
   external: [...externals],
   plugins: [

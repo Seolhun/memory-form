@@ -4,6 +4,7 @@ import typescript from 'rollup-plugin-typescript2';
 import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
+import autoprefixer from 'autoprefixer';
 
 import pkg from './package.json';
 
@@ -13,14 +14,14 @@ if (pkg.peerDependencies) {
 }
 
 export default {
-  input: './src/index.ts',
+  input: './index.ts',
   output: [
     {
       format: 'cjs',
       file: 'dist/index.js',
     },
     {
-			format: 'es',
+      format: 'es',
       file: 'dist/index.esm.js',
     },
     {
@@ -29,10 +30,10 @@ export default {
       plugins: [terser()],
     },
     {
-			format: 'es',
+      format: 'es',
       file: 'dist/index.esm.min.js',
       plugins: [terser()],
-		},
+    },
   ],
   external: [...externals],
   plugins: [

@@ -2,20 +2,20 @@
   "compilerOptions": {
     "target": "ES2015",
     "module": "ESNext",
-    "moduleResolution": "Node",
     "lib": [
       "DOM",
       "DOM.Iterable",
       "ESNext"
     ],
+    "moduleResolution": "Node",
+    "jsx": "react",
+    "types": ["jest", "node"],
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react",
     /* Enable all strict type-checking options. */
     // https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281
     "strict": true,
-
-    /* Strict Type-Checking Options */
     "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -43,7 +43,6 @@
     /* Stylize errors and messages using color and context. */
     "pretty": true,
 
-    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noEmitOnError": true,
@@ -57,9 +56,7 @@
     }
   },
   "exclude": [
-    ".vscode",
     "node_modules/**",
-    "./test/**",
     "./**/*.test.ts",
   ],
 }
