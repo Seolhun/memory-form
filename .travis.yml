@@ -15,7 +15,7 @@ branches:
     - /^hotfix/.*$/
 
 before_install:
-  - npm ci
+  - npm install
 
 script:
   - npm run bs
