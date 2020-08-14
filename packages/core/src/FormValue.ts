@@ -69,6 +69,14 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
   public get hasError(): boolean {
     return !!this.error;
   }
+
+  public get toFormValue() {
+    return {
+      value: this.value,
+      error: this.error,
+      isDirty: this.isDirty,
+    };
+  }
 }
 
 export { FormValue };
