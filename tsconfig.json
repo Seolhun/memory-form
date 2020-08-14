@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES2015",
     "module": "ESNext",
     "moduleResolution": "Node",
     "lib": [
@@ -50,11 +50,16 @@
     "sourceMap": false,
     "rootDir": ".",
     "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "core": ["packages/core/dist/index.d.ts"],
+      "memory-form-hooks": ["packages/memory-form-hooks/dist/index.d.ts"],
+    }
   },
   "exclude": [
     ".vscode",
     "node_modules/**",
-    "./src/test/**",
-    "./src/**/*.test.ts",
+    "./test/**",
+    "./**/*.test.ts",
   ],
 }

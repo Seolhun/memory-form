@@ -1,0 +1,69 @@
+{
+  "license": "MIT",
+  "author": {
+    "name": "Seolhun",
+    "email": "shun10116@gmail.com",
+    "url": "https://github.com/Seolhun"
+  },
+  "name": "@seolhun/momory-form-core",
+  "description": "To build momory-form-core modules",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist/",
+    "package.json",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "scripts": {
+    "browserslist": "browserslist",
+    "build": "rollup -c",
+    "prebuild": "rm -rf dist",
+    "clear": "rm -rf dist && rm -rf .rpt2_cache",
+    "bundle": "rollup -c",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "core-js": "^3.6.2"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-transform-arrow-functions": "^7.10.4",
+    "@babel/plugin-transform-classes": "^7.10.4",
+    "@babel/plugin-transform-destructuring": "^7.10.4",
+    "@babel/plugin-transform-literals": "^7.10.4",
+    "@babel/plugin-transform-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@gfx/zopfli": "^1.0.15",
+    "@rollup/plugin-babel": "^5.0.4",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@types/jest": "^24.9.1",
+    "@types/react": "^16.9.46",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "jest": "^24.9.0",
+    "rollup": "^1.32.1",
+    "rollup-plugin-postcss": "^2.9.0",
+    "rollup-plugin-terser": "^6.1.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "ts-jest": "^24.3.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
