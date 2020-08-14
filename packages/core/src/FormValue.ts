@@ -31,19 +31,15 @@ class FormValue<T = string> {
 
   error: string = '';
 
-  constructor(value: FormValueType<T>, options: FormValueOptionProps<T>) {
-    this._originValue = value;
-    this.options = options;
+  constructor(value: FormValueType<T>, options?: FormValueOptionProps<T>) {
+    this._originValue = Object.freeze(value);
+    this.options = Object.freeze(options || {});
     this._prevValue = value;
     this._value = value;
+    if (this.options.initValidation) {
+      this.handleValidation(value);
+    }
   }
-  /**
-   * @name State
-   */
-
-  /**
-   * @name Options
-   */
 
   /**
    * @name Methods
@@ -70,14 +66,14 @@ class FormValue<T = string> {
   /**
    * @name GetterSetter
    */
-  public get value(): T {
-    return this._value;
-  }
-
   public set value(newValue: T) {
     this._prevValue = this._value;
     this._value = newValue;
     this.handleValue(newValue).handleValidation(newValue);
+  }
+
+  public get value(): T {
+    return this._value;
   }
 
   /**

@@ -12,7 +12,7 @@ module.exports = {
     },
   },
   transformIgnorePatterns: ['/node_modules'],
-  testMatch: ['<rootDir>/test/**/*.(test|spec).ts?(x)'],
+  testMatch: ['<rootDir>/**/*.(test|spec).ts?(x)'],
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx', 'js', 'jsx'],
   moduleNameMapper: {
     '^@/(.*)': '<rootDir>/src/$1',
