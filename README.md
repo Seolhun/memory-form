@@ -1,5 +1,7 @@
 # memory-form
 
+[![Build Status](https://travis-ci.com/Seolhun/memory-form.svg?branch=master)](https://travis-ci.com/Seolhun/memory-form)
+
 ## Goal
 
 - Memorizing values
