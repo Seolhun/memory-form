@@ -18,6 +18,8 @@
   ],
   "scripts": {
     "browserslist": "browserslist",
+    "prettier": "prettier --write './src/**/*.{ts,tsx,js,jsx}'",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "build": "rollup -c",
     "prebuild": "rm -rf dist",
     "clear": "rm -rf dist && rm -rf .rpt2_cache",
