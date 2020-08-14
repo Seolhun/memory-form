@@ -1,7 +1,7 @@
 if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   npm install -g npm-cli-login
-  npm-cli-login -u seolhun -p $GITHUB_NPM_REGISTRY_TOKEN -e shun10116@gmail.com -r https://npm.pkg.github.com/
-  npm set //npm.pkg.github.com/:_authToken=$GITHUB_NPM_REGISTRY_TOKEN
+  npm-cli-login -u $GITHUB_NAME -p $NPM_TOKEN -e $GITHUB_EMAIL -r https://npm.pkg.github.com/
+  npm set //npm.pkg.github.com/:_authToken=$NPM_TOKEN
 
   ######################################################################################
   # If jobs has Github Tag, Docker is pushed

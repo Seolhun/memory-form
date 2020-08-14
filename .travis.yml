@@ -26,8 +26,7 @@ script:
 #   - ./bin/build-deploy-docs.sh
 
 notifications:
-  email:
-    - shun10116@gmail.com
+  email: false
   slack:
     rooms:
       - hi-cordworkspace:EC6Q4SIRTddzUEE0rMDXrSl6#dev-travis
