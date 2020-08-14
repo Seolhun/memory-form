@@ -24,7 +24,7 @@
     "prebuild": "rm -rf dist",
     "clear": "rm -rf dist && rm -rf .rpt2_cache",
     "bundle": "rollup -c",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "peerDependencies": {
     "core-js": "^3.6.2"
