@@ -12,7 +12,7 @@
         "docs",
         "packages/examples",
         "packages/templates",
-        "**/__test__",
+        "**/test",
         "**/*.md"
       ]
     }

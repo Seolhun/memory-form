@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "lib": [
-      "dom",
-      "es5",
-      "es6",
-      "es7",
-      "es2018",
+      "DOM",
+      "DOM.Iterable",
       "ESNext"
     ],
     "allowSyntheticDefaultImports": true,
@@ -57,7 +54,7 @@
   "exclude": [
     ".vscode",
     "node_modules/**",
-    "./src/__test__/**",
+    "./src/test/**",
     "./src/**/*.test.ts",
   ],
 }
