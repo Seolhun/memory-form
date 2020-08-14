@@ -1,0 +1,33 @@
+sudo: required
+
+language: node_js
+
+node_js:
+  - "10"
+
+before_install:
+  - npm ci
+  - npm run bootstrap
+
+jobs:
+  include:
+    #############################
+    # Test
+    #############################
+    - stage: Tests
+      name: Unit Test
+      script:
+        - npm run test
+    # #############################
+    # # Build & Deploy
+    # #############################
+    # - stage: Build and Deploy
+    #   name: build and push
+    #   script:
+    #     - npm run build
+    #     - ./bin/npm-github-push.sh
+# notifications:
+#   email: false
+#   slack:
+#     rooms:
+#       - ejnkr:2uRLoxWgV1zOpqFXBXWWA86F#deploy

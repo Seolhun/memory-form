@@ -1,0 +1,81 @@
+{
+  "license": "MIT",
+  "author": {
+    "name": "Seolhun",
+    "email": "shun10116@gmail.com",
+    "url": "https://github.com/Seolhun"
+  },
+  "name": "@seolhun/brackets",
+  "description": "To build @seolhun/brackets",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist/",
+    "package.json",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prebuild": "rm -rf dist",
+    "clear": "rm -rf dist && rm -rf .rpt2_cache",
+    "bundle": "rollup -c",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27",
+    "classnames": "^2.2.6",
+    "core-js": "^3.6.2",
+    "polished": "^3.4.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/plugin-transform-arrow-functions": "^7.7.4",
+    "@babel/plugin-transform-async-to-generator": "^7.7.4",
+    "@babel/plugin-transform-classes": "^7.7.4",
+    "@babel/plugin-transform-destructuring": "^7.7.4",
+    "@babel/plugin-transform-literals": "^7.7.4",
+    "@babel/plugin-transform-react-constant-elements": "^7.7.4",
+    "@babel/plugin-transform-spread": "^7.7.4",
+    "@babel/preset-env": "^7.7.7",
+    "@gfx/zopfli": "^1.0.14",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@types/jest": "^24.0.25",
+    "@types/react": "^16.9.17",
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "autoprefixer": "^9.4.3",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.4",
+    "express": "^4.16.4",
+    "jest": "^24.9.0",
+    "rollup": "^1.29.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^2.0.3",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "ts-jest": "^24.3.0",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.7.2",
+    "url-loader": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

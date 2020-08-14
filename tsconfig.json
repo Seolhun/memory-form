@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "es5",
+      "es6",
+      "es7",
+      "es2018",
+      "ESNext"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    /* Enable all strict type-checking options. */
+    // https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281
+    "strict": true,
+
+    /* Strict Type-Checking Options */
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+
+    /* Additional Checks */
+    /* Report errors on unused locals. */
+    "noUnusedLocals": true,
+    /* Report errors on unused parameters. */
+    "noUnusedParameters": false,
+    /* Report error when not all code paths in function return a value. */
+    "noImplicitReturns": true,
+    /* Report errors for fallthrough cases in switch statement. */
+    "noFallthroughCasesInSwitch": true,
+
+    /* Debugging Options */
+    /* Report module resolution log messages. */
+    "traceResolution": false,
+    /* Print names of generated files part of the compilation. */
+    "listEmittedFiles": false,
+    /* Print names of files part of the compilation. */
+    "listFiles": false,
+    /* Stylize errors and messages using color and context. */
+    "pretty": true,
+
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noEmitOnError": true,
+    "sourceMap": false,
+    "rootDir": ".",
+    "outDir": "dist",
+  },
+  "exclude": [
+    ".vscode",
+    "node_modules/**",
+    "./src/__test__/**",
+    "./src/**/*.test.ts",
+  ],
+}
