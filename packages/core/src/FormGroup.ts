@@ -1,19 +1,30 @@
-import { FormValue } from './FormValue';
 import { MemoryQueue } from './queue';
+import { FormValue } from './FormValue';
 
-export interface FormGroupOptionProps<T = any> {
+export type FormGroupProps<T> = {
+  [key in keyof T]: FormGroupValueType<T>;
+};
+
+export type FormGroupValueType<T> = {
   /**
-   * @default "() => undefined"
-   * @description This props is to change the value
+   * @description This props is to display the value
    */
-  onChange?: (newValues: Partial<T>) => void;
+  value: T[keyof T];
 
   /**
    * @default "() => ''"
    * @description This props is to change the value validation
    */
-  onValidation?: (newValues: Partial<T>) => string;
+  onValidation?: (value: T[keyof T]) => string;
+};
 
+export type FormGroupFormType<T> = {
+  [key in keyof T]: FormValue<T[keyof T]>;
+};
+
+export type ValidationType = 'change' | 'submit';
+
+export interface FormGroupOptionProps {
   /**
    * @default false
    * @description This props is to check the init value validation.
@@ -45,24 +56,7 @@ export interface FormGroupOptionProps<T = any> {
   validationTimeout?: number;
 }
 
-export type ValidationType = 'change' | 'submit';
-
-export type FormGroupValueProps<T> = {
-  [key in keyof T]: T[keyof T];
-};
-
-export type FormGroupToForm<T> = {
-  [key in keyof T]: FormValue<T[keyof T]>;
-};
-
-export type FormGroupValue<T> = {
-  key: keyof T;
-  value: FormValue<T[keyof T]>;
-};
-
-const DEFAULT_PROPS: Required<FormGroupOptionProps<any>> = {
-  onChange: (values: Partial<any>) => values,
-  onValidation: (_values: Partial<any>) => '',
+const DEFAULT_PROPS: FormGroupOptionProps = {
   initValidation: false,
   validationType: 'change',
   snapshotSize: 20,
@@ -71,16 +65,16 @@ const DEFAULT_PROPS: Required<FormGroupOptionProps<any>> = {
 };
 
 class FormGroup<T> {
-  readonly options: FormGroupOptionProps<T>;
+  readonly options: FormGroupOptionProps;
 
   private readonly snapshots: MemoryQueue<T>;
 
-  private readonly group: FormGroupValue<T>[];
+  readonly form: FormGroupFormType<T>;
 
-  constructor(value: FormGroupValueProps<T>, options?: FormGroupOptionProps<T>) {
-    this.options = Object.freeze(options || (DEFAULT_PROPS as FormGroupOptionProps<T>));
+  constructor(values: FormGroupProps<T>, options?: FormGroupOptionProps) {
+    this.options = Object.freeze(options || DEFAULT_PROPS);
     this.snapshots = new MemoryQueue<T>([], this.options.snapshotSize);
-    this.group = this._rawToGroup(value);
+    this.form = this._propsToForm(values);
   }
 
   /**
@@ -88,38 +82,27 @@ class FormGroup<T> {
    */
   public set value(newValues: T) {
     this.snapshots.push(this.value);
-    this._handleGroupValues(newValues)._handleGroupValidations(newValues);
+    this._handleGroupValues(newValues);
   }
 
   public get value(): T {
-    const raw = this.group.reduce<T>((acc, groupValue) => {
+    return Object.keys(this.form).reduce((acc, key) => {
       return {
         ...acc,
-        [groupValue.key]: groupValue.value.currentValue,
+        [key]: this.getGroupValue(key as keyof T).currentValue,
       };
     }, {} as any);
-    return raw;
-  }
-
-  public get toForm(): FormGroupToForm<T> {
-    const rawValues: any = {};
-    this.group.forEach((groupForm) => {
-      Object.assign(rawValues, {
-        [groupForm.key]: groupForm.value,
-      });
-    });
-    return rawValues;
   }
 
   public get isDirty(): boolean {
-    return this.group.some((groupForm) => {
-      return groupForm.value.isDirty;
+    return Object.keys(this.form).some((key) => {
+      return this.getGroupValue(key as keyof T).isDirty;
     });
   }
 
   public get hasError(): boolean {
-    return this.group.some((groupForm) => {
-      return groupForm.value.hasError;
+    return Object.keys(this.form).some((key) => {
+      return this.getGroupValue(key as keyof T).hasError;
     });
   }
 
@@ -138,65 +121,48 @@ class FormGroup<T> {
   /**
    * @name Methods
    */
-  private _rawToGroup(values: FormGroupValueProps<T>): FormGroupValue<T>[] {
-    const formValues = Object.keys(values).map<FormGroupValue<T>>((key: any) => {
+  private _propsToForm(values: FormGroupProps<T>): FormGroupFormType<T> {
+    const formValues = Object.keys(values).reduce<any>((acc, key) => {
+      const formGroupValue: FormGroupValueType<T> = values[key];
       return {
-        key,
-        value: new FormValue(values[key], {
+        ...acc,
+        [key]: new FormValue(formGroupValue, {
           initValidation: this.options.initValidation,
-          onChange: (value) => {
-            if (this.options.onChange) {
-              this.options.onChange({
-                [key]: value,
-              });
-            }
-          },
-          onValidation: (value) => {
-            if (this.options.onValidation) {
-              return this.options.onValidation({
-                [key]: value,
-              });
+          onValidation: (value: any) => {
+            if (formGroupValue.onValidation) {
+              return formGroupValue.onValidation(value);
             }
             return '';
           },
         }),
       };
-    });
+    }, {});
     return formValues;
   }
 
   private _handleGroupValues(newValues: Partial<T>) {
-    if (this.options.onChange) {
-      this.options.onChange(newValues);
-    }
-    this.group.forEach((groupForm) => {
-      const newValue: any = newValues[groupForm.key];
-      if (newValue) {
-        groupForm.value.value = newValue;
-      }
+    Object.keys(this.form).forEach((key) => {
+      this.form[key].value = newValues[key];
     });
     return this;
   }
 
-  private _handleGroupValidations(newValues: Partial<T>) {
-    if (this.options.onValidation) {
-      this.options.onValidation(newValues);
-    }
-    return this;
+  private getGroupValue(key: keyof T) {
+    return this.form[key];
   }
 
   undo() {
-    const item = this.snapshots.undo(this.value);
-    if (item) {
-      this.value = item;
+    const storedForm = this.snapshots.undo(this.value);
+    if (storedForm) {
+      this.value = storedForm;
     }
     return this;
   }
 
   redo() {
-    const item = this.snapshots.redo(this.value);
-    if (item) {
-      this.value = item;
+    const storedForm = this.snapshots.redo(this.value);
+    if (storedForm) {
+      this.value = storedForm;
     }
     return this;
   }

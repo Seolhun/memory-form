@@ -2,12 +2,6 @@ import { AbstractMemoryValue } from './AbstractMemoryValue';
 
 export interface FormValueOptionProps<T = string> {
   /**
-   * @default "() => undefined"
-   * @description This props is to change the value
-   */
-  onChange?: (newValue: T) => void;
-
-  /**
    * @default "() => ''"
    * @description This props is to change the value validation
    */
@@ -39,7 +33,7 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
   public set value(newValue: T) {
     this.prevValue = this.currentValue;
     this.currentValue = newValue;
-    this._handleValue(newValue)._handleValidation(newValue);
+    this._handleValidation(newValue);
   }
 
   public get value() {
@@ -48,16 +42,6 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
 
   public get hasError(): boolean {
     return !!this.error;
-  }
-
-  /**
-   * @name Methods
-   */
-  private _handleValue(newValue: T) {
-    if (this.options.onChange) {
-      this.options.onChange(newValue);
-    }
-    return this;
   }
 
   private _handleValidation(newValue: T) {

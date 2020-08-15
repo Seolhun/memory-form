@@ -12,10 +12,6 @@ describe('FormValue Test', () => {
   test('constructor value with options', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'nextValue';
-    let closuredValue = '';
-    const onChange = jest.fn((newValue) => {
-      closuredValue = newValue;
-    });
     const onValidation = jest.fn((newValue) => {
       if (newValue !== originValue) {
         return 'Has Changed';
@@ -23,18 +19,15 @@ describe('FormValue Test', () => {
       return '';
     });
     const formValue = new FormValue(originValue, {
-      onChange,
       onValidation,
     });
     expect(formValue.value).toBe(originValue);
     expect(formValue.options).toStrictEqual({
-      onChange,
       onValidation,
     });
     expect(formValue.isDirty).toBe(false);
     expect(formValue.hasError).toBe(false);
     formValue.value = nextValue;
-    expect(closuredValue).toBe(nextValue);
     expect(formValue.hasError).toBe(true);
     expect(formValue.error).toBe('Has Changed');
   });
