@@ -54,8 +54,6 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
    * @name GetterSetter
    */
   public set value(newValue: T) {
-    this._prevValue = this._value;
-    this._value = newValue;
     this._handleValue(newValue)._handleValidation(newValue);
   }
 

@@ -65,6 +65,17 @@ describe('FormValue Test', () => {
     expect(formValue.value).toBe(originValue);
   });
 
+  test('isEquals', () => {
+    const originValue: string = 'seolhun';
+    const nextValue = 'shun';
+    const formValue = new FormValue(originValue);
+    expect(formValue.isEqauls(nextValue)).toBe(false);
+    formValue.value = nextValue;
+    expect(formValue.value).toBe(nextValue);
+    expect(formValue.isDirty).toBe(true);
+    expect(formValue.isEqauls(nextValue)).toBe(true);
+  });
+
   test('toFormValue', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'shun';

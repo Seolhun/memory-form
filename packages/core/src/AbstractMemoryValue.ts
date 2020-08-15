@@ -19,6 +19,10 @@ abstract class AbstractMemoryValue<T = string> {
     return this;
   }
 
+  isEqauls(newValue: T): boolean {
+    return this.value === newValue;
+  }
+
   /**
    * @name GetterSetter
    */
