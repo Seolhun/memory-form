@@ -49,11 +49,6 @@
     "sourceMap": false,
     "rootDir": ".",
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "core": ["packages/core/dist/index.d.ts"],
-      "memory-form-hooks": ["packages/memory-form-hooks/dist/index.d.ts"],
-    }
   },
   "exclude": [
     "node_modules/**",
