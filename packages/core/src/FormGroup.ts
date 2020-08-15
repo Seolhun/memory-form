@@ -1,5 +1,5 @@
-import FormValue from './FormValue';
-import AbstractMemoryValue from './AbstractMemoryValue';
+import { FormValue } from './FormValue';
+import { Queue, MemoryQueue } from './queue';
 
 export interface FormGroupOptionProps<T = any> {
   /**
@@ -9,28 +9,22 @@ export interface FormGroupOptionProps<T = any> {
   onChange?: (newValues: Partial<T>) => void;
 
   /**
+   * @default "() => ''"
+   * @description This props is to change the value validation
+   */
+  onValidation?: (newValues: Partial<T>) => string;
+
+  /**
    * @default false
    * @description This props is to check the init value validation.
    */
   initValidation?: boolean;
 
   /**
-   * @default chagne
+   * @default change
    * @description This props is to check validation type.
    */
   validationType?: ValidationType;
-
-  /**
-   * @default false
-   * @description This props is to check validation sequence type.
-   */
-  isSequence?: boolean;
-
-  /**
-   * @default true
-   * @description This props is to move time traveling .
-   */
-  hasSnapshot?: boolean;
 
   /**
    * @default 20
@@ -51,144 +45,155 @@ export interface FormGroupOptionProps<T = any> {
   validationTimeout?: number;
 }
 
-export type ValidationType = 'chagne' | 'submit';
+export type ValidationType = 'change' | 'submit';
+
+export type FormGroupValueProps<T> = {
+  [key in keyof T]: T[keyof T];
+};
+
+export type FormGroupValue<T> = {
+  key: keyof T;
+  value: FormValue<T[keyof T]>;
+};
 
 const DEFAULT_PROPS: Required<FormGroupOptionProps<any>> = {
-  onChange: () => undefined,
+  onChange: (values: Partial<any>) => values,
+  onValidation: (_values: Partial<any>) => '',
   initValidation: false,
-  validationType: 'chagne',
-  isSequence: false,
-  hasSnapshot: true,
+  validationType: 'change',
   snapshotSize: 20,
   snapshotTimeout: 1000,
   validationTimeout: 500,
 };
 
-class FormGroup<T = {}> extends AbstractMemoryValue<T> {
+class FormGroup<T> {
   readonly options: FormGroupOptionProps<T>;
 
-  error: string = '';
+  private readonly snapshots: Queue<T>;
 
-  readonly snapshots: T[] = [];
+  private readonly group: FormGroupValue<T>[];
 
-  constructor(value: T, options?: FormGroupOptionProps<T>) {
-    super(value);
+  constructor(value: FormGroupValueProps<T>, options?: FormGroupOptionProps<T>) {
     this.options = Object.freeze(options || (DEFAULT_PROPS as FormGroupOptionProps<T>));
-    const formValues = this._parseRawValueToFormValue(value);
-    this._prevValue = formValues;
-    this._value = formValues;
+    this.snapshots = new MemoryQueue<T>([], this.options.snapshotSize);
+    this.group = this._rawToGroup(value);
+  }
+
+  /**
+   * @name Computed
+   */
+  public set value(newValues: T) {
+    this.snapshots.push(this.value);
+    this._handleGroupValues(newValues)._handleGroupValidations(newValues);
+  }
+
+  public get value(): T {
+    return this._formToRaw();
+  }
+
+  public get isDirty(): boolean {
+    return this.group.some((groupForm) => {
+      return groupForm.value.isDirty;
+    });
+  }
+
+  public get hasError(): boolean {
+    return this.group.some((groupForm) => {
+      return groupForm.value.hasError;
+    });
+  }
+
+  public get snapshotsSize(): number {
+    return this.snapshots.size;
+  }
+
+  public get hasSnapshot(): boolean {
+    return this.snapshots.isEmpty;
+  }
+
+  public get isFullSnapshots(): boolean {
+    return this.snapshots.isLast;
   }
 
   /**
    * @name Methods
    */
-  private _parseRawValueToFormValue(value: T): T {
-    const formValues = Object.keys(value).reduce<any>((acc, key) => {
+  private _rawToGroup(values: FormGroupValueProps<T>): FormGroupValue<T>[] {
+    const formValues = Object.keys(values).map<FormGroupValue<T>>((key: any) => {
       return {
-        ...acc,
-        [key]: new FormValue<T[keyof T]>(value[key], {
+        key,
+        value: new FormValue(values[key], {
           initValidation: this.options.initValidation,
+          onChange: (value) => {
+            if (this.options.onChange) {
+              this.options.onChange({
+                [key]: value,
+              });
+            }
+          },
+          onValidation: (value) => {
+            if (this.options.onValidation) {
+              return this.options.onValidation({
+                [key]: value,
+              });
+            }
+            return '';
+          },
         }),
       };
-    }, {});
+    });
     return formValues;
   }
 
-  private _parseFormValueToRawValue(formValues: T): T {
-    const rawValues = Object.keys(formValues).reduce<any>((acc, key) => {
-      return {
-        ...acc,
-        [key]: formValues[key].value,
-      };
-    }, {});
+  // TODO
+  private _formToRaw(): T {
+    const rawValues: any = {};
+    this.group.forEach((groupForm) => {
+      Object.assign(rawValues, {
+        [groupForm.key]: groupForm.value.currentValue,
+      });
+    });
     return rawValues;
-  }
-
-  private _handleSnapshots(newValues: T) {
-    if (this.isFullSnapshots) {
-      this.snapshots.shift();
-    }
-    this.snapshots.push(newValues);
-
-    return this;
   }
 
   private _handleGroupValues(newValues: Partial<T>) {
     if (this.options.onChange) {
       this.options.onChange(newValues);
     }
-
+    this.group.forEach((groupForm) => {
+      const newValue: any = newValues[groupForm.key];
+      if (newValue) {
+        groupForm.value.value = newValue;
+      }
+    });
     return this;
   }
 
-  private _handleGroupValidations(newValue: T) {
-    return this;
-  }
-
-  reset() {
-    this.value = this._parseRawValueToFormValue(this._originValue);
-    return this;
-  }
-
-  go(index: number) {
+  private _handleGroupValidations(newValues: Partial<T>) {
+    if (this.options.onValidation) {
+      this.options.onValidation(newValues);
+    }
     return this;
   }
 
   undo() {
-    const item = this.snapshots.shift();
-    if (item) {
-      this.value = item;
+    if (this.hasSnapshot) {
+      const item = this.snapshots.shift();
+      if (item) {
+        this.value = item;
+      }
     }
+    return this;
   }
 
-  redo() {}
-
-  // toValues(): FormValueProps<T> {
-  //   return
-  // }
-
-  /**
-   * @name GetterSetter
-   */
-  public set value(newValues: T) {
-    this._prevValue = this._value;
-    this.value = newValues;
-    this._handleSnapshots(this._value)
-      ._handleGroupValues(newValues)
-      ._handleGroupValidations(newValues);
-  }
-
-  public get value(): T {
-    return this._parseFormValueToRawValue(this._value);
-  }
-
-  /**
-   * @name Computed
-   */
-  public get isDirty(): boolean {
-    return Object.keys(this._value).every((key) => {
-      const formValue: FormValue<T[keyof T]> = this._value[key];
-      return formValue.isDirty;
-    });
-  }
-
-  public get hasError(): boolean {
-    return Object.keys(this._value).every((key) => {
-      const formValue: FormValue<T[keyof T]> = this._value[key];
-      return formValue.error;
-    });
-  }
-
-  public get snapshotsSize(): number {
-    return this.snapshots.length;
-  }
-
-  public get hasSnapshot(): boolean {
-    return this.snapshotsSize > 0;
-  }
-
-  public get isFullSnapshots(): boolean {
-    return this.snapshotsSize >= this.snapshotsSize;
+  redo() {
+    if (this.hasSnapshot) {
+      const item = this.snapshots.shift();
+      if (item) {
+        this.value = item;
+      }
+    }
+    return this;
   }
 }
 

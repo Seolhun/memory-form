@@ -75,29 +75,4 @@ describe('FormValue Test', () => {
     expect(formValue.isDirty).toBe(true);
     expect(formValue.isEqauls(nextValue)).toBe(true);
   });
-
-  test('toFormValue', () => {
-    const originValue: string = 'seolhun';
-    const nextValue = 'shun';
-    const onValidation = jest.fn((newValue) => {
-      if (newValue !== originValue) {
-        return 'Has Changed';
-      }
-      return '';
-    });
-    const formValue = new FormValue(originValue, {
-      onValidation,
-    });
-    expect(formValue.toFormValue).toStrictEqual({
-      value: originValue,
-      isDirty: false,
-      error: '',
-    });
-    formValue.value = nextValue;
-    expect(formValue.toFormValue).toStrictEqual({
-      value: nextValue,
-      isDirty: true,
-      error: 'Has Changed',
-    });
-  });
 });
