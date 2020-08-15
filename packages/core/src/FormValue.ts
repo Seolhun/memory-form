@@ -37,13 +37,13 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
    * @name Computed
    */
   public set value(newValue: T) {
-    this._prevValue = this._value;
-    this._value = newValue;
+    this.prevValue = this.currentValue;
+    this.currentValue = newValue;
     this._handleValue(newValue)._handleValidation(newValue);
   }
 
   public get value() {
-    return this._value;
+    return this.currentValue;
   }
 
   public get hasError(): boolean {

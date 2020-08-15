@@ -1,42 +1,30 @@
 abstract class AbstractMemoryValue<T = string> {
-  readonly _originValue: T;
+  readonly originValue: T;
 
-  _prevValue: T;
+  prevValue: T;
 
-  _value: T;
+  currentValue: T;
 
   constructor(value: T) {
-    this._originValue = Object.freeze(value);
-    this._prevValue = value;
-    this._value = value;
-  }
-
-  /**
-   * @name Computed
-   */
-  public set value(newValue: T) {
-    this._prevValue = this._value;
-    this._value = newValue;
-  }
-
-  public get value() {
-    return this._value;
+    this.originValue = Object.freeze(value);
+    this.prevValue = value;
+    this.currentValue = value;
   }
 
   public get isDirty(): boolean {
-    return this._originValue !== this.value;
+    return this.originValue !== this.currentValue;
   }
 
   /**
    * @name Methods
    */
   reset() {
-    this.value = this._originValue;
+    this.currentValue = this.originValue;
     return this;
   }
 
   isEqauls(newValue: T): boolean {
-    return this.value === newValue;
+    return this.currentValue === newValue;
   }
 }
 
