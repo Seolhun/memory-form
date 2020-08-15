@@ -12,19 +12,7 @@ abstract class AbstractMemoryValue<T = string> {
   }
 
   /**
-   * @name Methods
-   */
-  reset() {
-    this.value = this._originValue;
-    return this;
-  }
-
-  isEqauls(newValue: T): boolean {
-    return this.value === newValue;
-  }
-
-  /**
-   * @name GetterSetter
+   * @name Computed
    */
   public set value(newValue: T) {
     this._prevValue = this._value;
@@ -35,11 +23,20 @@ abstract class AbstractMemoryValue<T = string> {
     return this._value;
   }
 
-  /**
-   * @name Computed
-   */
   public get isDirty(): boolean {
     return this._originValue !== this.value;
+  }
+
+  /**
+   * @name Methods
+   */
+  reset() {
+    this.value = this._originValue;
+    return this;
+  }
+
+  isEqauls(newValue: T): boolean {
+    return this.value === newValue;
   }
 }
 

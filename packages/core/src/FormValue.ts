@@ -34,6 +34,31 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
   }
 
   /**
+   * @name Computed
+   */
+  public set value(newValue: T) {
+    this._prevValue = this._value;
+    this._value = newValue;
+    this._handleValue(newValue)._handleValidation(newValue);
+  }
+
+  public get value() {
+    return this._value;
+  }
+
+  public get hasError(): boolean {
+    return !!this.error;
+  }
+
+  public get toFormValue() {
+    return {
+      value: this.value,
+      error: this.error,
+      isDirty: this.isDirty,
+    };
+  }
+
+  /**
    * @name Methods
    */
   private _handleValue(newValue: T) {
@@ -48,32 +73,6 @@ class FormValue<T = string> extends AbstractMemoryValue<T> {
       this.error = this.options.onValidation(newValue);
     }
     return this;
-  }
-
-  /**
-   * @name GetterSetter
-   */
-  public set value(newValue: T) {
-    this._handleValue(newValue)._handleValidation(newValue);
-  }
-
-  public get value() {
-    return this._value;
-  }
-
-  /**
-   * @name Computed
-   */
-  public get hasError(): boolean {
-    return !!this.error;
-  }
-
-  public get toFormValue() {
-    return {
-      value: this.value,
-      error: this.error,
-      isDirty: this.isDirty,
-    };
   }
 }
 
