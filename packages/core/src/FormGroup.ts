@@ -1,5 +1,5 @@
 import { FormValue } from './FormValue';
-import { Queue, MemoryQueue } from './queue';
+import { MemoryQueue } from './queue';
 
 export interface FormGroupOptionProps<T = any> {
   /**
@@ -51,6 +51,10 @@ export type FormGroupValueProps<T> = {
   [key in keyof T]: T[keyof T];
 };
 
+export type FormGroupToForm<T> = {
+  [key in keyof T]: FormValue<T[keyof T]>;
+};
+
 export type FormGroupValue<T> = {
   key: keyof T;
   value: FormValue<T[keyof T]>;
@@ -69,7 +73,7 @@ const DEFAULT_PROPS: Required<FormGroupOptionProps<any>> = {
 class FormGroup<T> {
   readonly options: FormGroupOptionProps<T>;
 
-  private readonly snapshots: Queue<T>;
+  private readonly snapshots: MemoryQueue<T>;
 
   private readonly group: FormGroupValue<T>[];
 
@@ -88,7 +92,23 @@ class FormGroup<T> {
   }
 
   public get value(): T {
-    return this._formToRaw();
+    const raw = this.group.reduce<T>((acc, groupValue) => {
+      return {
+        ...acc,
+        [groupValue.key]: groupValue.value.currentValue,
+      };
+    }, {} as any);
+    return raw;
+  }
+
+  public get toForm(): FormGroupToForm<T> {
+    const rawValues: any = {};
+    this.group.forEach((groupForm) => {
+      Object.assign(rawValues, {
+        [groupForm.key]: groupForm.value,
+      });
+    });
+    return rawValues;
   }
 
   public get isDirty(): boolean {
@@ -108,7 +128,7 @@ class FormGroup<T> {
   }
 
   public get hasSnapshot(): boolean {
-    return this.snapshots.isEmpty;
+    return !this.snapshots.isEmpty;
   }
 
   public get isFullSnapshots(): boolean {
@@ -145,17 +165,6 @@ class FormGroup<T> {
     return formValues;
   }
 
-  // TODO
-  private _formToRaw(): T {
-    const rawValues: any = {};
-    this.group.forEach((groupForm) => {
-      Object.assign(rawValues, {
-        [groupForm.key]: groupForm.value.currentValue,
-      });
-    });
-    return rawValues;
-  }
-
   private _handleGroupValues(newValues: Partial<T>) {
     if (this.options.onChange) {
       this.options.onChange(newValues);
@@ -177,21 +186,17 @@ class FormGroup<T> {
   }
 
   undo() {
-    if (this.hasSnapshot) {
-      const item = this.snapshots.shift();
-      if (item) {
-        this.value = item;
-      }
+    const item = this.snapshots.undo(this.value);
+    if (item) {
+      this.value = item;
     }
     return this;
   }
 
   redo() {
-    if (this.hasSnapshot) {
-      const item = this.snapshots.shift();
-      if (item) {
-        this.value = item;
-      }
+    const item = this.snapshots.redo(this.value);
+    if (item) {
+      this.value = item;
     }
     return this;
   }

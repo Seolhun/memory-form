@@ -38,7 +38,7 @@ abstract class AbstractQueue<T> implements Queue<T> {
   private toClear(...items: T[]) {
     if (this.isLast) {
       for (let index = 0; index < items.length; index++) {
-        this.queue.shift();
+        this.shift();
       }
     }
     return this;

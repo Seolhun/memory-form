@@ -29,7 +29,7 @@ describe('FormGroup Test', () => {
     };
     const nextValue = {
       name: 'hun',
-      age: 30,
+      age: 25,
     };
     let closuredValue = {};
     const onChange = jest.fn((newValue) => {
@@ -55,5 +55,105 @@ describe('FormGroup Test', () => {
     expect(closuredValue).toStrictEqual(nextValue);
     expect(formGroup.isDirty).toBe(true);
     expect(formGroup.hasError).toBe(true);
+  });
+
+  test('toForm', () => {
+    const originValue = {
+      name: 'seol',
+      age: 20,
+    };
+
+    let closuredValue = {};
+    const onChange = jest.fn((newValue) => {
+      Object.assign(closuredValue, newValue);
+    });
+    const onValidation = jest.fn((newValue) => {
+      if (newValue.age !== originValue.age) {
+        return 'Has Changed';
+      }
+      return '';
+    });
+    const formGroup = new FormGroup(originValue, {
+      onChange,
+      onValidation,
+    });
+    expect(formGroup.toForm.age.currentValue).toBe(originValue.age);
+    expect(formGroup.toForm.name.currentValue).toBe(originValue.name);
+
+    const nextValue = {
+      name: 'hun',
+      age: 25,
+    };
+    formGroup.value = nextValue;
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(nextValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(nextValue.name);
+
+    const lastValue = {
+      name: 'seolhun',
+      age: 30,
+    };
+    formGroup.value = lastValue;
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(lastValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(lastValue.name);
+  });
+
+  test('redo undo', () => {
+    const originValue = {
+      name: 'seol',
+      age: 20,
+    };
+
+    let closuredValue = {};
+    const onChange = jest.fn((newValue) => {
+      Object.assign(closuredValue, newValue);
+    });
+    const onValidation = jest.fn((newValue) => {
+      if (newValue.age !== originValue.age) {
+        return 'Has Changed';
+      }
+      return '';
+    });
+    const formGroup = new FormGroup(originValue, {
+      onChange,
+      onValidation,
+    });
+    expect(formGroup.toForm.age.currentValue).toBe(originValue.age);
+    expect(formGroup.toForm.name.currentValue).toBe(originValue.name);
+
+    const nextValue = {
+      name: 'hun',
+      age: 25,
+    };
+    formGroup.value = nextValue;
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(nextValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(nextValue.name);
+
+    const lastValue = {
+      name: 'seolhun',
+      age: 30,
+    };
+    formGroup.value = lastValue;
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(lastValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(lastValue.name);
+
+    formGroup.undo();
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(nextValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(nextValue.name);
+
+    formGroup.redo();
+    expect(formGroup.toForm.age.originValue).toBe(originValue.age);
+    expect(formGroup.toForm.age.currentValue).toBe(lastValue.age);
+    expect(formGroup.toForm.name.originValue).toBe(originValue.name);
+    expect(formGroup.toForm.name.currentValue).toBe(lastValue.name);
   });
 });
