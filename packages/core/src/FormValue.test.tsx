@@ -47,6 +47,36 @@ describe('FormValue Test', () => {
     expect(formValue.error).toBe('Value is Empty');
   });
 
+  test('toValue', () => {
+    const originValue: string = 'seolhun';
+    const errorMessage = 'Value is changed';
+    const onValidation = jest.fn((newValue, formValues) => {
+      if (newValue !== formValues.originValue) {
+        return errorMessage;
+      }
+      return '';
+    });
+    const formValue = new FormValue(originValue, {
+      onValidation,
+    });
+    expect(formValue.toValue()).toStrictEqual({
+      originValue: originValue,
+      prevValue: originValue,
+      value: originValue,
+      error: '',
+      isDirty: false,
+    });
+    const nextValue = 'shun';
+    formValue.value = nextValue;
+    expect(formValue.toValue()).toStrictEqual({
+      originValue: originValue,
+      prevValue: originValue,
+      value: nextValue,
+      error: errorMessage,
+      isDirty: true,
+    });
+  });
+
   test('reset', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'shun';

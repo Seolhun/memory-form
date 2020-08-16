@@ -3,13 +3,21 @@ export interface FormValueOptionProps<T = string> {
    * @default "() => ''"
    * @description This props is to change the value validation
    */
-  onValidation?: (newValue: T) => string;
+  onValidation?: (newValue: T, formValues?: FormValueToValueResponse<T>) => string;
 
   /**
    * @default false
    * @description This props is to check the init value validation.
    */
   initValidation?: boolean;
+}
+
+interface FormValueToValueResponse<T> {
+  originValue: T;
+  prevValue: T;
+  value: T;
+  error: string;
+  isDirty: boolean;
 }
 
 class FormValue<T = string> {
@@ -58,7 +66,7 @@ class FormValue<T = string> {
    */
   private _handleValidation(newValue: T) {
     if (this.options.onValidation) {
-      this.error = this.options.onValidation(newValue);
+      this.error = this.options.onValidation(newValue, this.toValue());
     }
     return this;
   }
@@ -72,7 +80,7 @@ class FormValue<T = string> {
     return this.currentValue === newValue;
   }
 
-  toValue() {
+  toValue(): FormValueToValueResponse<T> {
     return {
       originValue: this.originValue,
       prevValue: this.prevValue,
