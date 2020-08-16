@@ -22,8 +22,8 @@ script:
   - npm run test
   - npm run build
 
-# after_success:
-#   - ./bin/build-deploy-docs.sh
+after_success:
+  - ./bin/npm-github-push.sh
 
 notifications:
   email: false
