@@ -21,9 +21,9 @@ export interface FormValueToValueResponse<T> {
 }
 
 class FormValue<T = string> {
-  readonly options: FormValueOptionProps<T>;
+  private readonly options: FormValueOptionProps<T>;
 
-  readonly originValue: T;
+  private readonly originValue: T;
 
   private prevValue: T;
 

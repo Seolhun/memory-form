@@ -5,9 +5,10 @@ import { useFormValue } from './useFormValue';
 describe('useFormValue', () => {
   test('init', () => {
     const { result } = renderHook(() => useFormValue(0));
+    console.log('@@', result);
     expect(result.current.value).toBe(0);
     act(() => {
-      result.current.value = 10;
+      result.current.setValue(10);
     });
     expect(result.current.value).toBe(10);
   });
