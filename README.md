@@ -12,11 +12,17 @@
 
 
 ```bash
-npm install @seolhun/memory-form
+# For JS
+npm install @seolhun/memory-form-core
+
+# For React
+npm install @seolhun/memory-form-hooks
 ```
 
 ### Javascript
 ```js
+import { FormValue, FormGroup } from '@seolhun/memory-form-core';
+
 // FormValue
 const formValue = new FormValue<number>(0, {
   onValidation: (value: number) => {
@@ -70,6 +76,8 @@ formGroup.toValue().age.error; // 'Has Changed';
 
 ### React
 ```ts
+import { useFormValue, useFormGroup } from '@seolhun/memory-form-hooks';
+
 // FormValue
 const formValue = useFormValue<number>(0, {
   onValidation: (value: number) => {
