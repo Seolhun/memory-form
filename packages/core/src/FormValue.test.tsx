@@ -5,7 +5,6 @@ describe('FormValue Test', () => {
     const originValue: string = 'seolhun';
     const formValue = new FormValue(originValue);
     expect(formValue.value()).toBe(originValue);
-    expect(formValue.options).toStrictEqual({});
     expect(formValue.isDirty).toBe(false);
   });
 
@@ -22,9 +21,6 @@ describe('FormValue Test', () => {
       onValidation,
     });
     expect(formValue.value()).toBe(originValue);
-    expect(formValue.options).toStrictEqual({
-      onValidation,
-    });
     expect(formValue.isDirty).toBe(false);
     expect(formValue.hasError).toBe(false);
     formValue.setValue(nextValue);
