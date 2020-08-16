@@ -12,7 +12,7 @@ export interface FormValueOptionProps<T = string> {
   initValidation?: boolean;
 }
 
-interface FormValueToValueResponse<T> {
+export interface FormValueToValueResponse<T> {
   originValue: T;
   prevValue: T;
   value: T;
@@ -25,9 +25,9 @@ class FormValue<T = string> {
 
   readonly originValue: T;
 
-  prevValue: T;
+  private prevValue: T;
 
-  currentValue: T;
+  private currentValue: T;
 
   error: string = '';
 
@@ -43,16 +43,6 @@ class FormValue<T = string> {
   /**
    * @name Computed
    */
-  public set value(newValue: T) {
-    this.prevValue = this.currentValue;
-    this.currentValue = newValue;
-    this._handleValidation(newValue);
-  }
-
-  public get value() {
-    return this.currentValue;
-  }
-
   public get hasError(): boolean {
     return !!this.error;
   }
@@ -78,6 +68,17 @@ class FormValue<T = string> {
 
   isEqauls(newValue: T): boolean {
     return this.currentValue === newValue;
+  }
+
+  setValue(newValue: T) {
+    this.prevValue = this.currentValue;
+    this.currentValue = newValue;
+    this._handleValidation(newValue);
+    return this;
+  }
+
+  value() {
+    return this.currentValue;
   }
 
   toValue(): FormValueToValueResponse<T> {

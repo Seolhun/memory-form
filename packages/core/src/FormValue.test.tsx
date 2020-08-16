@@ -4,7 +4,7 @@ describe('FormValue Test', () => {
   test('constructor only value', () => {
     const originValue: string = 'seolhun';
     const formValue = new FormValue(originValue);
-    expect(formValue.value).toBe(originValue);
+    expect(formValue.value()).toBe(originValue);
     expect(formValue.options).toStrictEqual({});
     expect(formValue.isDirty).toBe(false);
   });
@@ -21,13 +21,13 @@ describe('FormValue Test', () => {
     const formValue = new FormValue(originValue, {
       onValidation,
     });
-    expect(formValue.value).toBe(originValue);
+    expect(formValue.value()).toBe(originValue);
     expect(formValue.options).toStrictEqual({
       onValidation,
     });
     expect(formValue.isDirty).toBe(false);
     expect(formValue.hasError).toBe(false);
-    formValue.value = nextValue;
+    formValue.setValue(nextValue);
     expect(formValue.hasError).toBe(true);
     expect(formValue.error).toBe('Has Changed');
   });
@@ -67,7 +67,7 @@ describe('FormValue Test', () => {
       isDirty: false,
     });
     const nextValue = 'shun';
-    formValue.value = nextValue;
+    formValue.setValue(nextValue);
     expect(formValue.toValue()).toStrictEqual({
       originValue: originValue,
       prevValue: originValue,
@@ -81,11 +81,11 @@ describe('FormValue Test', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'shun';
     const formValue = new FormValue(originValue);
-    formValue.value = nextValue;
-    expect(formValue.value).toBe(nextValue);
+    formValue.setValue(nextValue);
+    expect(formValue.value()).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     formValue.reset();
-    expect(formValue.value).toBe(originValue);
+    expect(formValue.value()).toBe(originValue);
   });
 
   test('isEquals', () => {
@@ -93,8 +93,8 @@ describe('FormValue Test', () => {
     const nextValue = 'shun';
     const formValue = new FormValue(originValue);
     expect(formValue.isEqauls(nextValue)).toBe(false);
-    formValue.value = nextValue;
-    expect(formValue.value).toBe(nextValue);
+    formValue.setValue(nextValue);
+    expect(formValue.value()).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     expect(formValue.isEqauls(nextValue)).toBe(true);
   });

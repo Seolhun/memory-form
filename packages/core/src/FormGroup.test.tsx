@@ -16,10 +16,8 @@ describe('FormGroup Test', () => {
       },
     };
     const formGroup = new FormGroup<User>(originValue);
-    expect(formGroup.value.age).toBe(originValue.age);
-    expect(formGroup.value.name).toBe(originValue.name);
-    expect(formGroup.form.age.currentValue).toBe(originValue.age);
-    expect(formGroup.form.name.currentValue).toBe(originValue.name);
+    expect(formGroup.form.age.toValue().value).toBe(originValue.age.value);
+    expect(formGroup.form.name.toValue().value).toBe(originValue.name.value);
     expect(formGroup.options.initValidation).toBe(false);
     expect(formGroup.options.validationType).toBe('change');
     expect(formGroup.options.snapshotSize).toBe(20);
@@ -45,20 +43,21 @@ describe('FormGroup Test', () => {
       },
     };
     const nextValue = {
-      ...originValue,
+      age: {
+        value: 25,
+      },
       name: {
-        ...originValue.name,
         value: 'hun',
       },
     };
     const formGroup = new FormGroup(originValue);
-    expect(formGroup.value.age).toBe(originValue.age);
-    expect(formGroup.value.name).toBe(originValue.name);
+    expect(formGroup.form.age.toValue().value).toBe(originValue.age.value);
+    expect(formGroup.form.name.toValue().value).toBe(originValue.name.value);
     expect(formGroup.isDirty).toBe(false);
     expect(formGroup.hasError).toBe(false);
-    formGroup.value = nextValue;
-    expect(formGroup.value.age).toBe(nextValue.age);
-    expect(formGroup.value.name).toBe(nextValue.name);
+    formGroup.setValue(nextValue);
+    expect(formGroup.form.age.toValue().value).toBe(nextValue.age.value);
+    expect(formGroup.form.name.toValue().value).toBe(nextValue.name.value);
     expect(formGroup.isDirty).toBe(true);
     expect(formGroup.hasError).toBe(true);
   });
@@ -81,8 +80,8 @@ describe('FormGroup Test', () => {
     };
 
     const formGroup = new FormGroup(originValue);
-    expect(formGroup.form.age.currentValue).toBe(originValue.age);
-    expect(formGroup.form.name.currentValue).toBe(originValue.name);
+    expect(formGroup.form.age.toValue().value).toBe(originValue.age.value);
+    expect(formGroup.form.name.toValue().value).toBe(originValue.name.value);
     const nextValue = {
       name: {
         ...originValue.name,
@@ -93,21 +92,27 @@ describe('FormGroup Test', () => {
         value: 25,
       },
     };
-    formGroup.value = nextValue;
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(nextValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(nextValue.name);
+    formGroup.setValue(nextValue);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(nextValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(nextValue.name.value);
 
     const lastValue = {
-      name: 'seolhun',
-      age: 30,
+      name: {
+        ...nextValue.name,
+        value: 'seolhun',
+      },
+      age: {
+        ...nextValue.age,
+        value: 30,
+      },
     };
-    formGroup.value = lastValue;
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(lastValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(lastValue.name);
+    formGroup.setValue(lastValue);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(lastValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(lastValue.name.value);
   });
 
   test('redo - undo', () => {
@@ -127,8 +132,8 @@ describe('FormGroup Test', () => {
       },
     };
     const formGroup = new FormGroup(originValue);
-    expect(formGroup.form.age.currentValue).toBe(originValue.age);
-    expect(formGroup.form.name.currentValue).toBe(originValue.name);
+    expect(formGroup.form.age.toValue().value).toBe(originValue.age.value);
+    expect(formGroup.form.name.toValue().value).toBe(originValue.name.value);
     const nextValue = {
       name: {
         ...originValue.name,
@@ -139,11 +144,11 @@ describe('FormGroup Test', () => {
         value: 25,
       },
     };
-    formGroup.value = nextValue;
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(nextValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(nextValue.name);
+    formGroup.setValue(nextValue);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(nextValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(nextValue.name.value);
     expect(formGroup.form.name.error).toBe('');
     expect(formGroup.form.age.error).toBe(errorMessage);
 
@@ -157,22 +162,22 @@ describe('FormGroup Test', () => {
         value: 30,
       },
     };
-    formGroup.value = lastValue;
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(lastValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(lastValue.name);
+    formGroup.setValue(lastValue);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(lastValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(lastValue.name.value);
 
     formGroup.undo();
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(nextValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(nextValue.name);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(nextValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(nextValue.name.value);
 
     formGroup.redo();
-    expect(formGroup.form.age.originValue).toBe(originValue.age);
-    expect(formGroup.form.age.currentValue).toBe(lastValue.age);
-    expect(formGroup.form.name.originValue).toBe(originValue.name);
-    expect(formGroup.form.name.currentValue).toBe(lastValue.name);
+    expect(formGroup.form.age.originValue).toBe(originValue.age.value);
+    expect(formGroup.form.age.toValue().value).toBe(lastValue.age.value);
+    expect(formGroup.form.name.originValue).toBe(originValue.name.value);
+    expect(formGroup.form.name.toValue().value).toBe(lastValue.name.value);
   });
 });

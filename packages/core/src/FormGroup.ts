@@ -1,5 +1,6 @@
+import { isNil } from './utils';
 import { MemoryQueue } from './queue';
-import { FormValue } from './FormValue';
+import { FormValue, FormValueToValueResponse } from './FormValue';
 
 export type FormGroupProps<T> = {
   [key in keyof T]: FormGroupValueType<T>;
@@ -15,7 +16,7 @@ export type FormGroupValueType<T> = {
    * @default "() => ''"
    * @description This props is to change the value validation
    */
-  onValidation?: (value: T[keyof T]) => string;
+  onValidation?: (value: T[keyof T], toValues?: FormValueToValueResponse<T[keyof T]>) => string;
 };
 
 export type FormGroupFormType<T> = {
@@ -80,20 +81,6 @@ class FormGroup<T> {
   /**
    * @name Computed
    */
-  public set value(newValues: T) {
-    this.snapshots.push(this.value);
-    this._handleGroupValues(newValues);
-  }
-
-  public get value(): T {
-    return Object.keys(this.form).reduce((acc, key) => {
-      return {
-        ...acc,
-        [key]: this.getGroupValue(key as keyof T).currentValue,
-      };
-    }, {} as any);
-  }
-
   public get isDirty(): boolean {
     return Object.keys(this.form).some((key) => {
       return this.getGroupValue(key as keyof T).isDirty;
@@ -124,13 +111,16 @@ class FormGroup<T> {
   private _propsToForm(values: FormGroupProps<T>): FormGroupFormType<T> {
     const formValues = Object.keys(values).reduce<any>((acc, key) => {
       const formGroupValue: FormGroupValueType<T> = values[key];
+      if (isNil(formGroupValue.value)) {
+        throw new Error('FormGroup value rops must has value property');
+      }
       return {
         ...acc,
-        [key]: new FormValue(formGroupValue, {
+        [key]: new FormValue(formGroupValue.value, {
           initValidation: this.options.initValidation,
-          onValidation: (value: any) => {
+          onValidation: (value: T[keyof T], toValues?: FormValueToValueResponse<T[keyof T]>) => {
             if (formGroupValue.onValidation) {
-              return formGroupValue.onValidation(value);
+              return formGroupValue.onValidation(value, toValues);
             }
             return '';
           },
@@ -142,7 +132,9 @@ class FormGroup<T> {
 
   private _handleGroupValues(newValues: Partial<T>) {
     Object.keys(this.form).forEach((key) => {
-      this.form[key].value = newValues[key];
+      const groupFormValue: FormValue<T[keyof T]> = this.form[key];
+      const newValue: T[keyof T] = newValues[key].value;
+      groupFormValue.setValue(newValue);
     });
     return this;
   }
@@ -152,19 +144,34 @@ class FormGroup<T> {
   }
 
   undo() {
-    const storedForm = this.snapshots.undo(this.value);
+    const storedForm = this.snapshots.undo(this.value());
     if (storedForm) {
-      this.value = storedForm;
+      this.setValue(storedForm);
     }
     return this;
   }
 
   redo() {
-    const storedForm = this.snapshots.redo(this.value);
+    const storedForm = this.snapshots.redo(this.value());
     if (storedForm) {
-      this.value = storedForm;
+      this.setValue(storedForm);
     }
     return this;
+  }
+
+  setValue(newValues: T) {
+    this.snapshots.push(this.value());
+    this._handleGroupValues(newValues);
+    return this;
+  }
+
+  value() {
+    return Object.keys(this.form).reduce((acc, key) => {
+      return {
+        ...acc,
+        [key]: this.getGroupValue(key as keyof T).toValue(),
+      };
+    }, {} as any);
   }
 }
 
