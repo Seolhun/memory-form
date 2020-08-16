@@ -5,12 +5,11 @@ import { useFormValue } from './useFormValue';
 describe('useFormValue', () => {
   test('init', () => {
     const { result } = renderHook(() => useFormValue(0));
-    console.log('@@', result);
-    expect(result.current.value).toBe(0);
+    expect(result.current.toValue().value).toBe(0);
     act(() => {
       result.current.setValue(10);
     });
-    expect(result.current.value).toBe(10);
+    expect(result.current.value()).toBe(10);
   });
 
   test('with Options', () => {
@@ -25,11 +24,11 @@ describe('useFormValue', () => {
         },
       }),
     );
-    expect(result.current.value).toBe(0);
+    expect(result.current.value()).toBe(0);
     act(() => {
-      result.current.value = 10;
+      result.current.setValue(10);
     });
-    expect(result.current.value).toBe(10);
+    expect(result.current.value()).toBe(10);
     expect(result.current.isDirty).toBe(true);
     expect(result.current.hasError).toBe(true);
     expect(result.current.error).toBe(errorMessage);

@@ -6,6 +6,14 @@ export type FormGroupProps<T> = {
   [key in keyof T]: FormGroupValueType<T>;
 };
 
+export type FormGroupToValueResponse<T> = {
+  [key in keyof T]: FormValueToValueResponse<T[keyof T]>;
+};
+
+export type FormGroupValueResponse<T> = {
+  [key in keyof T]: T[keyof T];
+};
+
 export type FormGroupValueType<T> = {
   /**
    * @description This props is to display the value
@@ -68,13 +76,13 @@ const DEFAULT_PROPS: FormGroupOptionProps = {
 class FormGroup<T> {
   readonly options: FormGroupOptionProps;
 
-  private readonly snapshots: MemoryQueue<T>;
+  private readonly snapshots: MemoryQueue<Partial<FormGroupValueResponse<T>>>;
 
   readonly form: FormGroupFormType<T>;
 
   constructor(values: FormGroupProps<T>, options?: FormGroupOptionProps) {
     this.options = Object.freeze(options || DEFAULT_PROPS);
-    this.snapshots = new MemoryQueue<T>([], this.options.snapshotSize);
+    this.snapshots = new MemoryQueue([], this.options.snapshotSize);
     this.form = this._propsToForm(values);
   }
 
@@ -130,10 +138,10 @@ class FormGroup<T> {
     return formValues;
   }
 
-  private _handleGroupValues(newValues: Partial<T>) {
+  private _handleGroupValues(newValues: Partial<FormGroupValueResponse<T>>) {
     Object.keys(this.form).forEach((key) => {
       const groupFormValue: FormValue<T[keyof T]> = this.form[key];
-      const newValue: T[keyof T] = newValues[key].value;
+      const newValue: T[keyof T] = newValues[key];
       groupFormValue.setValue(newValue);
     });
     return this;
@@ -159,19 +167,32 @@ class FormGroup<T> {
     return this;
   }
 
-  setValue(newValues: T) {
+  setValue(newValues: Partial<FormGroupValueResponse<T>>) {
     this.snapshots.push(this.value());
     this._handleGroupValues(newValues);
     return this;
   }
 
-  value() {
-    return Object.keys(this.form).reduce((acc, key) => {
+  value(): FormGroupValueResponse<T> {
+    const formValues = Object.keys(this.form).reduce((acc, key) => {
+      return {
+        ...acc,
+        [key]: this.getGroupValue(key as keyof T).value(),
+      };
+    }, {} as any);
+
+    return formValues;
+  }
+
+  toValue(): FormGroupToValueResponse<T> {
+    const formValues = Object.keys(this.form).reduce((acc, key) => {
       return {
         ...acc,
         [key]: this.getGroupValue(key as keyof T).toValue(),
       };
     }, {} as any);
+
+    return formValues;
   }
 }
 
