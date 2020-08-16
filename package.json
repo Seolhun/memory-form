@@ -8,8 +8,7 @@
   "name": "@seolhun/memory-form",
   "publishConfig": {
     "access": "public",
-    "directory": "dist",
-    "registry": "https://npm.pkg.github.com/"
+    "directory": "dist"
   },
   "scripts": {
     "clean": "lerna clean -y",
