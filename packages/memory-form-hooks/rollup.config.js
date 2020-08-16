@@ -14,7 +14,7 @@ if (pkg.peerDependencies) {
 }
 
 export default {
-  input: './index.ts',
+  input: './src/index.ts',
   output: [
     {
       format: 'cjs',

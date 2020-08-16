@@ -1,17 +1,9 @@
-import { AbstractMemoryValue } from './AbstractMemoryValue';
-
 export interface FormValueOptionProps<T = string> {
-  /**
-   * @default "() => undefined"
-   * @description This props is to change the value
-   */
-  onChange?: (newValue: T) => void;
-
   /**
    * @default "() => ''"
    * @description This props is to change the value validation
    */
-  onValidation?: (newValue: T) => string;
+  onValidation?: (newValue: T, formValues?: FormValueToValueResponse<T>) => string;
 
   /**
    * @default false
@@ -20,51 +12,83 @@ export interface FormValueOptionProps<T = string> {
   initValidation?: boolean;
 }
 
-class FormValue<T = string> extends AbstractMemoryValue<T> {
-  readonly options: FormValueOptionProps<T>;
+export interface FormValueToValueResponse<T> {
+  originValue: T;
+  prevValue: T;
+  value: T;
+  error: string;
+  isDirty: boolean;
+}
+
+class FormValue<T = string> {
+  private readonly options: FormValueOptionProps<T>;
+
+  private readonly originValue: T;
+
+  private prevValue: T;
+
+  private currentValue: T;
 
   error: string = '';
 
   constructor(value: T, options?: FormValueOptionProps<T>) {
-    super(value);
+    this.originValue = Object.freeze(value);
+    this.prevValue = value;
+    this.currentValue = value;
     this.options = Object.freeze(options || {});
     if (this.options.initValidation) {
       this._handleValidation(value);
     }
   }
-
   /**
    * @name Computed
    */
-  public set value(newValue: T) {
-    this.prevValue = this.currentValue;
-    this.currentValue = newValue;
-    this._handleValue(newValue)._handleValidation(newValue);
-  }
-
-  public get value() {
-    return this.currentValue;
-  }
-
   public get hasError(): boolean {
     return !!this.error;
+  }
+
+  public get isDirty(): boolean {
+    return this.originValue !== this.currentValue;
   }
 
   /**
    * @name Methods
    */
-  private _handleValue(newValue: T) {
-    if (this.options.onChange) {
-      this.options.onChange(newValue);
+  private _handleValidation(newValue: T) {
+    if (this.options.onValidation) {
+      this.error = this.options.onValidation(newValue, this.toValue());
     }
     return this;
   }
 
-  private _handleValidation(newValue: T) {
-    if (this.options.onValidation) {
-      this.error = this.options.onValidation(newValue);
-    }
+  reset() {
+    this.currentValue = this.originValue;
     return this;
+  }
+
+  isEqauls(newValue: T): boolean {
+    return this.currentValue === newValue;
+  }
+
+  setValue(newValue: T) {
+    this.prevValue = this.currentValue;
+    this.currentValue = newValue;
+    this._handleValidation(newValue);
+    return this;
+  }
+
+  value() {
+    return this.currentValue;
+  }
+
+  toValue(): FormValueToValueResponse<T> {
+    return {
+      originValue: this.originValue,
+      prevValue: this.prevValue,
+      value: this.currentValue,
+      error: this.error,
+      isDirty: this.isDirty,
+    };
   }
 }
 

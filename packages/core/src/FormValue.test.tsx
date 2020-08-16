@@ -4,18 +4,13 @@ describe('FormValue Test', () => {
   test('constructor only value', () => {
     const originValue: string = 'seolhun';
     const formValue = new FormValue(originValue);
-    expect(formValue.value).toBe(originValue);
-    expect(formValue.options).toStrictEqual({});
+    expect(formValue.value()).toBe(originValue);
     expect(formValue.isDirty).toBe(false);
   });
 
   test('constructor value with options', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'nextValue';
-    let closuredValue = '';
-    const onChange = jest.fn((newValue) => {
-      closuredValue = newValue;
-    });
     const onValidation = jest.fn((newValue) => {
       if (newValue !== originValue) {
         return 'Has Changed';
@@ -23,18 +18,12 @@ describe('FormValue Test', () => {
       return '';
     });
     const formValue = new FormValue(originValue, {
-      onChange,
       onValidation,
     });
-    expect(formValue.value).toBe(originValue);
-    expect(formValue.options).toStrictEqual({
-      onChange,
-      onValidation,
-    });
+    expect(formValue.value()).toBe(originValue);
     expect(formValue.isDirty).toBe(false);
     expect(formValue.hasError).toBe(false);
-    formValue.value = nextValue;
-    expect(closuredValue).toBe(nextValue);
+    formValue.setValue(nextValue);
     expect(formValue.hasError).toBe(true);
     expect(formValue.error).toBe('Has Changed');
   });
@@ -54,15 +43,45 @@ describe('FormValue Test', () => {
     expect(formValue.error).toBe('Value is Empty');
   });
 
+  test('toValue', () => {
+    const originValue: string = 'seolhun';
+    const errorMessage = 'Value is changed';
+    const onValidation = jest.fn((newValue, formValues) => {
+      if (newValue !== formValues.originValue) {
+        return errorMessage;
+      }
+      return '';
+    });
+    const formValue = new FormValue(originValue, {
+      onValidation,
+    });
+    expect(formValue.toValue()).toStrictEqual({
+      originValue: originValue,
+      prevValue: originValue,
+      value: originValue,
+      error: '',
+      isDirty: false,
+    });
+    const nextValue = 'shun';
+    formValue.setValue(nextValue);
+    expect(formValue.toValue()).toStrictEqual({
+      originValue: originValue,
+      prevValue: originValue,
+      value: nextValue,
+      error: errorMessage,
+      isDirty: true,
+    });
+  });
+
   test('reset', () => {
     const originValue: string = 'seolhun';
     const nextValue = 'shun';
     const formValue = new FormValue(originValue);
-    formValue.value = nextValue;
-    expect(formValue.value).toBe(nextValue);
+    formValue.setValue(nextValue);
+    expect(formValue.value()).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     formValue.reset();
-    expect(formValue.value).toBe(originValue);
+    expect(formValue.value()).toBe(originValue);
   });
 
   test('isEquals', () => {
@@ -70,8 +89,8 @@ describe('FormValue Test', () => {
     const nextValue = 'shun';
     const formValue = new FormValue(originValue);
     expect(formValue.isEqauls(nextValue)).toBe(false);
-    formValue.value = nextValue;
-    expect(formValue.value).toBe(nextValue);
+    formValue.setValue(nextValue);
+    expect(formValue.value()).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     expect(formValue.isEqauls(nextValue)).toBe(true);
   });

@@ -5,19 +5,23 @@
     "email": "shun10116@gmail.com",
     "url": "https://github.com/Seolhun"
   },
-  "name": "@seolhun/containers",
+  "name": "@seolhun/memory-form",
   "publishConfig": {
     "access": "public",
-    "directory": "dist",
-    "registry": "https://npm.pkg.github.com/"
+    "directory": "dist"
   },
   "scripts": {
+    "clean": "lerna clean -y",
+    "clear": "lerna run clear",
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
     "prettier": "lerna run prettier",
-    "bs": "lerna bootstrap",
+    "bs": "lerna bootstrap --force-local",
     "version:ci": "lerna version --yes --conventional-commits --create-release github",
+    "version:test": "npm version prerelease --preid=alpha --from-git",
+    "version:dev": "npm version prerelease --preid=beta --from-git",
+    "version:prod": "npm version patch --from-git -m",
     "prerelease": "lerna publish from-git",
     "release": "lerna publish",
     "prerelease:dev": "lerna publish from-git",
