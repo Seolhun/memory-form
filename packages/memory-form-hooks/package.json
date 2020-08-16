@@ -7,7 +7,7 @@
   },
   "name": "@seolhun/memory-form-hooks",
   "description": "To build memory-form-hooks",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -27,9 +27,9 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@seolhun/momory-form-core": "^0.0.1",
     "@emotion/core": "^10.0.34",
     "@emotion/styled": "^10.0.27",
+    "@seolhun/momory-form-core": "^0.0.2",
     "classnames": "^2.2.6",
     "core-js": "^3.6.5",
     "polished": "^3.6.5",
