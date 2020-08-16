@@ -19,7 +19,7 @@ describe('FormGroup Test', () => {
         value: originValue.age,
       },
     });
-    expect(formGroup.form.age.toValue().value).toBe(originValue.age);
+    expect(formGroup.form.age.value()).toBe(originValue.age);
     expect(formGroup.form.name.toValue().value).toBe(originValue.name);
     expect(formGroup.options.initValidation).toBe(false);
     expect(formGroup.options.validationType).toBe('change');

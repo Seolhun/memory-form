@@ -65,8 +65,10 @@ describe('useFormGroup', () => {
       });
       result.current.setValue(user);
     });
+    expect(result.current.form.name.value()).toBe(user.name);
     expect(result.current.form.age.value()).toBe(user.age);
     expect(result.current.form.age.error).toBe(errorMessage);
+    expect(result.current.toValue().age.error).toBe(errorMessage);
     expect(result.current.isDirty).toBe(true);
     expect(result.current.hasError).toBe(true);
   });
