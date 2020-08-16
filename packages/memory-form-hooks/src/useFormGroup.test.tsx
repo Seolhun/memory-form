@@ -1,17 +1,22 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 
 import { useFormGroup } from './useFormGroup';
+import { FormGroupValueType } from '@seolhun/momory-form-core';
 
 interface User {
-  name: string;
-  age: number;
+  name: FormGroupValueType<string>;
+  age: FormGroupValueType<number>;
 }
 
 describe('useFormGroup', () => {
   test('init', () => {
     let user = {
-      name: 'seolhun',
-      age: 30,
+      name: {
+        value: 'seol',
+      },
+      age: {
+        value: 20,
+      },
     };
     const { result } = renderHook(() => useFormGroup<User>(user));
     expect(result.current.value.age).toBe(user.age);
@@ -20,7 +25,9 @@ describe('useFormGroup', () => {
     act(() => {
       user = {
         ...user,
-        age: 35,
+        age: {
+          value: 25,
+        },
       };
       result.current.value = user;
     });
@@ -31,14 +38,14 @@ describe('useFormGroup', () => {
 
   test('with Options', () => {
     let user = {
-      name: 'seolhun',
-      age: 30,
+      name: {
+        value: 'seol',
+      },
+      age: {
+        value: 20,
+      },
     };
-    let closuredValue = {};
     const errorMessage = 'Has Changed';
-    const onChange = jest.fn((newValue) => {
-      Object.assign(closuredValue, newValue);
-    });
     const onValidation = jest.fn((newValue) => {
       if (newValue.age !== user.age) {
         return errorMessage;
@@ -47,7 +54,6 @@ describe('useFormGroup', () => {
     });
     const { result } = renderHook(() =>
       useFormGroup<User>(user, {
-        onChange,
         onValidation,
       }),
     );
@@ -55,16 +61,15 @@ describe('useFormGroup', () => {
     act(() => {
       user = {
         ...user,
-        age: 35,
+        age: {
+          value: 25,
+        },
       };
       result.current.value = user;
     });
-    const formResult = result.current.toForm;
     expect(result.current.value.age).toBe(user.age);
-    expect(result.current.value).toStrictEqual(closuredValue);
     expect(result.current.isDirty).toBe(true);
     expect(result.current.hasError).toBe(true);
-    console.log('@@', formResult);
-    expect(formResult.age.error).toBe(errorMessage);
+    expect(result.current.form.age.error).toBe(errorMessage);
   });
 });
