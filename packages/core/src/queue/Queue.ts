@@ -16,4 +16,6 @@ export interface Queue<T> {
   pop: Array<T>['pop'];
 
   shift: Array<T>['shift'];
+
+  toArray: () => Array<T>;
 }

@@ -1,15 +1,15 @@
-export interface FormValueOptionProps<T = string> {
-  /**
-   * @default "() => ''"
-   * @description This props is to change the value validation
-   */
-  onValidation?: (newValue: T, formValues?: FormValueToValueResponse<T>) => string;
-
+export interface FormValueValodationProps<T = string> {
   /**
    * @default false
    * @description This props is to check the init value validation.
    */
   initValidation?: boolean;
+
+  /**
+   * @default "() => ''"
+   * @description This props is to change the value validation
+   */
+  onValidation?: (newValue: T, formValues?: FormValueToValueResponse<T>) => string;
 }
 
 export interface FormValueToValueResponse<T> {
@@ -21,7 +21,7 @@ export interface FormValueToValueResponse<T> {
 }
 
 class FormValue<T = string> {
-  private readonly options: FormValueOptionProps<T>;
+  private readonly validation: FormValueValodationProps<T>;
 
   private readonly originValue: T;
 
@@ -31,12 +31,12 @@ class FormValue<T = string> {
 
   error: string = '';
 
-  constructor(value: T, options?: FormValueOptionProps<T>) {
+  constructor(value: T, validation?: FormValueValodationProps<T>) {
+    this.validation = Object.freeze(validation || {});
     this.originValue = Object.freeze(value);
     this.prevValue = value;
     this.currentValue = value;
-    this.options = Object.freeze(options || {});
-    if (this.options.initValidation) {
+    if (this.validation.initValidation) {
       this._handleValidation(value);
     }
   }
@@ -55,8 +55,8 @@ class FormValue<T = string> {
    * @name Methods
    */
   private _handleValidation(newValue: T) {
-    if (this.options.onValidation) {
-      this.error = this.options.onValidation(newValue, this.toValue());
+    if (this.validation.onValidation) {
+      this.error = this.validation.onValidation(newValue, this.toValue());
     }
     return this;
   }

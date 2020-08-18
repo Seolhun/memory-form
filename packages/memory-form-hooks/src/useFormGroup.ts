@@ -1,12 +1,26 @@
 import React from 'react';
-import { FormGroup, FormGroupOptionProps, FormGroupProps } from '@seolhun/momory-form-core';
+import equals from 'fast-deep-equal';
+import {
+  FormGroup,
+  FormGroupValueProps,
+  FormGroupOptionProps,
+  FormGroupValidationProps,
+} from '@seolhun/momory-form-core';
 
-interface UseFormGroupOption<T = any> extends FormGroupOptionProps {}
-
-function useFormGroup<T = any>(value: FormGroupProps<T>, option?: UseFormGroupOption<T>) {
+function useFormGroup<T = any>(
+  value: FormGroupValueProps<T>,
+  validations?: FormGroupValidationProps<T>,
+  options?: FormGroupOptionProps,
+) {
   const memoizedFormGroup = React.useMemo(() => {
-    return new FormGroup<T>(value, option);
-  }, [value, option]);
+    return new FormGroup<T>(value, validations, options);
+  }, [value, validations]);
+
+  React.useEffect(() => {
+    if (!equals(memoizedFormGroup.options, options)) {
+      memoizedFormGroup.setOptions(options);
+    }
+  }, [options]);
 
   return memoizedFormGroup;
 }
