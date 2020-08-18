@@ -28,8 +28,7 @@
     "release:dev": "lerna publish --canary"
   },
   "devDependencies": {
-    "lerna": "^3.22.1",
-    "typescript": "^3.9.7"
+    "lerna": "^3.22.1"
   },
   "workspaces": [
     "packages/*"
