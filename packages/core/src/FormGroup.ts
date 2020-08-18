@@ -1,50 +1,41 @@
-import { isNil } from './utils';
 import { MemoryQueue } from './queue';
 import { FormValue, FormValueToValueResponse } from './FormValue';
 
-export type FormGroupProps<T> = {
-  [key in keyof T]: FormGroupValueType<T>;
-};
-
-export type FormGroupToValueResponse<T> = {
-  [key in keyof T]: FormValueToValueResponse<T[keyof T]>;
-};
-
-export type FormGroupValueResponse<T> = {
+/**
+ * @name FormGroupValueProps<T>
+ */
+export type FormGroupValueProps<T> = {
   [key in keyof T]: T[keyof T];
 };
 
-export type FormGroupValueType<T> = {
-  /**
-   * @description This props is to display the value
-   */
-  value: T[keyof T];
+/**
+ * @name FormGroupValidationProps<T>
+ */
+export type FormGroupValidationProps<T> = {
+  [key in keyof T]?: {
+    /**
+     * @default "() => ''"
+     * @description This props is to change the value validation
+     */
+    onValidation?: (value: T[keyof T], toValues?: FormGroupToValueResponse<T>) => string;
 
-  /**
-   * @default "() => ''"
-   * @description This props is to change the value validation
-   */
-  onValidation?: (value: T[keyof T], toValues?: FormValueToValueResponse<T[keyof T]>) => string;
+    /**
+     * @default false
+     * @description This props is to check the init value validation.
+     */
+    initValidation?: boolean;
+  };
 };
 
-export type FormGroupFormType<T> = {
-  [key in keyof T]: FormValue<T[keyof T]>;
-};
-
-export type ValidationType = 'change' | 'submit';
-
+/**
+ * @name FormGroupOptionProps
+ */
 export interface FormGroupOptionProps {
-  /**
-   * @default false
-   * @description This props is to check the init value validation.
-   */
-  initValidation?: boolean;
-
   /**
    * @default change
    * @description This props is to check validation type.
    */
-  validationType?: ValidationType;
+  validationType?: 'change' | 'submit';
 
   /**
    * @default 20
@@ -65,8 +56,21 @@ export interface FormGroupOptionProps {
   validationTimeout?: number;
 }
 
-const DEFAULT_PROPS: FormGroupOptionProps = {
-  initValidation: false,
+/**
+ * @name FormGroupFormType<T>
+ */
+export type FormGroupFormType<T> = {
+  [key in keyof T]: FormValue<T[keyof T]>;
+};
+
+/**
+ * @name FormGroupToValueResponse<T>
+ */
+export type FormGroupToValueResponse<T> = {
+  [key in keyof T]: FormValueToValueResponse<T[keyof T]>;
+};
+
+const DEFAULT_PROPS: Required<FormGroupOptionProps> = {
   validationType: 'change',
   snapshotSize: 20,
   snapshotTimeout: 1000,
@@ -74,14 +78,22 @@ const DEFAULT_PROPS: FormGroupOptionProps = {
 };
 
 class FormGroup<T> {
-  readonly options: FormGroupOptionProps;
+  readonly validations: FormGroupValidationProps<T>;
 
-  private readonly snapshots: MemoryQueue<Partial<FormGroupValueResponse<T>>>;
+  options: Required<FormGroupOptionProps>;
+
+  private snapshots: MemoryQueue<Partial<FormGroupValueProps<T>>>;
 
   readonly form: FormGroupFormType<T>;
 
-  constructor(values: FormGroupProps<T>, options?: FormGroupOptionProps) {
-    this.options = Object.freeze(options || DEFAULT_PROPS);
+  constructor(
+    values: FormGroupValueProps<T>,
+    validations?: FormGroupValidationProps<T>,
+    options?: FormGroupOptionProps,
+  ) {
+    this.validations = Object.freeze(validations || {});
+    Object.assign(DEFAULT_PROPS, options);
+    this.options = DEFAULT_PROPS;
     this.snapshots = new MemoryQueue([], this.options.snapshotSize);
     this.form = this._propsToForm(values);
   }
@@ -116,19 +128,18 @@ class FormGroup<T> {
   /**
    * @name Methods
    */
-  private _propsToForm(values: FormGroupProps<T>): FormGroupFormType<T> {
+  private _propsToForm(values: FormGroupValueProps<T>): FormGroupFormType<T> {
     const formValues = Object.keys(values).reduce<any>((acc, key) => {
-      const formGroupValue: FormGroupValueType<T> = values[key];
-      if (isNil(formGroupValue.value)) {
-        throw new Error('FormGroup value rops must has value property');
-      }
+      const typedKey = key as keyof T;
+      const formGroupValue = values[typedKey];
+      const formValueValidation = this.validations[typedKey];
       return {
         ...acc,
-        [key]: new FormValue(formGroupValue.value, {
-          initValidation: this.options.initValidation,
-          onValidation: (value: T[keyof T], toValues?: FormValueToValueResponse<T[keyof T]>) => {
-            if (formGroupValue.onValidation) {
-              return formGroupValue.onValidation(value, toValues);
+        [typedKey]: new FormValue(formGroupValue, {
+          initValidation: formValueValidation?.initValidation,
+          onValidation: (value: T[keyof T]) => {
+            if (formValueValidation?.onValidation) {
+              return formValueValidation.onValidation(value, this.toValue());
             }
             return '';
           },
@@ -138,7 +149,7 @@ class FormGroup<T> {
     return formValues;
   }
 
-  private _handleGroupValues(newValues: Partial<FormGroupValueResponse<T>>) {
+  private _handleGroupValues(newValues: Partial<FormGroupValueProps<T>>) {
     Object.keys(this.form).forEach((key) => {
       const groupFormValue: FormValue<T[keyof T]> = this.form[key];
       const newValue: T[keyof T] = newValues[key];
@@ -167,13 +178,22 @@ class FormGroup<T> {
     return this;
   }
 
-  setValue(newValues: Partial<FormGroupValueResponse<T>>) {
+  setValue(newValues: Partial<FormGroupValueProps<T>>) {
     this.snapshots.push(this.value());
     this._handleGroupValues(newValues);
     return this;
   }
 
-  value(): FormGroupValueResponse<T> {
+  setOptions(newOptions: Partial<FormGroupOptionProps>) {
+    if (typeof newOptions.snapshotSize === 'number') {
+      if (this.options.snapshotSize !== newOptions.snapshotSize) {
+        this.snapshots = new MemoryQueue(this.snapshots.toArray(), newOptions.snapshotSize);
+      }
+    }
+    Object.assign(this.options, newOptions);
+  }
+
+  value(): FormGroupValueProps<T> {
     const formValues = Object.keys(this.form).reduce((acc, key) => {
       return {
         ...acc,
