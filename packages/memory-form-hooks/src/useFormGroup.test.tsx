@@ -13,16 +13,7 @@ describe('useFormGroup', () => {
       name: 'seol',
       age: 20,
     };
-    const { result } = renderHook(() =>
-      useFormGroup<User>({
-        name: {
-          value: user.name,
-        },
-        age: {
-          value: user.age,
-        },
-      }),
-    );
+    const { result } = renderHook(() => useFormGroup<User>(user));
     expect(result.current.value().age).toBe(user.age);
     expect(result.current.value().name).toBe(user.name);
     expect(result.current.value()).toStrictEqual(user);
@@ -43,12 +34,8 @@ describe('useFormGroup', () => {
     };
     const errorMessage = 'Has Changed';
     const { result } = renderHook(() =>
-      useFormGroup<User>({
-        name: {
-          value: user.name,
-        },
+      useFormGroup<User>(user, {
         age: {
-          value: user.age,
           onValidation: (newValue) => {
             if (newValue !== 20) {
               return errorMessage;

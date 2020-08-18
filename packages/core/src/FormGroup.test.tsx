@@ -1,5 +1,4 @@
 import { FormGroup, FormGroupOptionProps } from './FormGroup';
-import equals from 'fast-deep-equal';
 
 interface User {
   name: string;
