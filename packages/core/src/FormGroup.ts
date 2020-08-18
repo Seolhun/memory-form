@@ -149,7 +149,7 @@ class FormGroup<T> {
     return formValues;
   }
 
-  private _handleGroupValues(newValues: Partial<FormGroupValueProps<T>>) {
+  private _handleGroupValues(newValues: Partial<FormGroupValueProps<T>> = {}) {
     Object.keys(this.form).forEach((key) => {
       const groupFormValue: FormValue<T[keyof T]> = this.form[key];
       const newValue: T[keyof T] = newValues[key];
@@ -178,13 +178,13 @@ class FormGroup<T> {
     return this;
   }
 
-  setValue(newValues: Partial<FormGroupValueProps<T>>) {
+  setValue(newValues: Partial<FormGroupValueProps<T>> = {}) {
     this.snapshots.push(this.value());
     this._handleGroupValues(newValues);
     return this;
   }
 
-  setOptions(newOptions: Partial<FormGroupOptionProps>) {
+  setOptions(newOptions: Partial<FormGroupOptionProps> = {}) {
     if (typeof newOptions.snapshotSize === 'number') {
       if (this.options.snapshotSize !== newOptions.snapshotSize) {
         this.snapshots = new MemoryQueue(this.snapshots.toArray(), newOptions.snapshotSize);

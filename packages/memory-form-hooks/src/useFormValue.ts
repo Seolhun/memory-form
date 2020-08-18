@@ -1,9 +1,9 @@
 import React from 'react';
-import { FormValue, FormValueOptionProps } from '@seolhun/momory-form-core';
+import { FormValue, FormValueValodationProps } from '@seolhun/momory-form-core';
 
-interface UseFormValueOption<T = any> extends FormValueOptionProps<T> {}
+interface UseFormValueValidation<T = any> extends FormValueValodationProps<T> {}
 
-function useFormValue<T = any>(value: T, option?: UseFormValueOption<T>) {
+function useFormValue<T = any>(value: T, option?: UseFormValueValidation<T>) {
   const memoizedFormValue = React.useMemo(() => {
     return new FormValue<T>(value, option);
   }, [value, option]);

@@ -1,4 +1,5 @@
 import { FormGroup, FormGroupOptionProps } from './FormGroup';
+import equals from 'fast-deep-equal';
 
 interface User {
   name: string;
@@ -192,17 +193,17 @@ describe('FormGroup Test', () => {
     }
     expect(formGroup.snapshotsSize).toBe(20);
 
-    const option: FormGroupOptionProps = {
+    const options: FormGroupOptionProps = {
       validationType: 'submit',
       snapshotSize: 40,
       snapshotTimeout: 500,
       validationTimeout: 1000,
     };
-    formGroup.setOptions(option);
-    expect(formGroup.options.validationType).toBe(option.validationType);
-    expect(formGroup.options.snapshotTimeout).toBe(option.snapshotTimeout);
-    expect(formGroup.options.validationTimeout).toBe(option.validationTimeout);
-    expect(formGroup.options.snapshotSize).toBe(option.snapshotSize);
+    formGroup.setOptions(options);
+    expect(formGroup.options.validationType).toBe(options.validationType);
+    expect(formGroup.options.snapshotTimeout).toBe(options.snapshotTimeout);
+    expect(formGroup.options.validationTimeout).toBe(options.validationTimeout);
+    expect(formGroup.options.snapshotSize).toBe(options.snapshotSize);
 
     for (let i = 1; i <= formGroup.options.snapshotSize; i++) {
       formGroup.setValue({
