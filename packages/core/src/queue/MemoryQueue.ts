@@ -28,7 +28,6 @@ class MemoryQueue<T> extends AbstractQueue<T> implements Queue<T> {
     if (!this.histories.isEmpty) {
       const item = this.histories.pop();
       if (item) {
-        this.push(item);
         return item;
       }
     }

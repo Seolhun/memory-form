@@ -165,7 +165,7 @@ class FormGroup<T> {
   undo = () => {
     const storedForm = this.snapshots.undo(this.value());
     if (storedForm) {
-      this.setValue(storedForm);
+      this._handleGroupValues(storedForm);
     }
     return this;
   };
@@ -173,13 +173,15 @@ class FormGroup<T> {
   redo = () => {
     const storedForm = this.snapshots.redo();
     if (storedForm) {
-      this.setValue(storedForm);
+      this._handleGroupValues(storedForm);
     }
     return this;
   };
 
   setValue = (newValues: Partial<FormGroupValueProps<T>> = {}) => {
+    // Set Prev Value
     this.snapshots.push(this.value());
+    // Set New Value
     this._handleGroupValues(newValues);
     return this;
   };

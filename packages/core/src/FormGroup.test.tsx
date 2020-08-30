@@ -140,14 +140,18 @@ describe('FormGroup Test', () => {
     expect(formGroup.form.age.toValue().value).toBe(nextValue.age);
     expect(formGroup.form.name.toValue().originValue).toBe(originValue.name);
     expect(formGroup.form.name.toValue().value).toBe(nextValue.name);
-    expect(formGroup.snapshotsSize).toBe(2);
+
+    formGroup.undo();
+    expect(formGroup.form.age.toValue().originValue).toBe(originValue.age);
+    expect(formGroup.form.age.toValue().value).toBe(originValue.age);
+
+    formGroup.redo();
+    expect(formGroup.form.age.toValue().originValue).toBe(originValue.age);
+    expect(formGroup.form.age.toValue().value).toBe(nextValue.age);
 
     formGroup.redo();
     expect(formGroup.form.age.toValue().originValue).toBe(originValue.age);
     expect(formGroup.form.age.toValue().value).toBe(lastValue.age);
-    expect(formGroup.form.name.toValue().originValue).toBe(originValue.name);
-    expect(formGroup.form.name.toValue().value).toBe(lastValue.name);
-    expect(formGroup.snapshotsSize).toBe(4);
   });
 
   test('snapshots', () => {
