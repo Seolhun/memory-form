@@ -6,6 +6,7 @@
     "url": "https://github.com/Seolhun"
   },
   "name": "@seolhun/memory-form",
+  "version": "0.1.2-alpha.1",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
