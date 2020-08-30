@@ -128,7 +128,7 @@ class FormGroup<T> {
   /**
    * @name Methods
    */
-  private _propsToForm(values: FormGroupValueProps<T>): FormGroupFormType<T> {
+  private _propsToForm = (values: FormGroupValueProps<T>): FormGroupFormType<T> => {
     const formValues = Object.keys(values).reduce<any>((acc, key) => {
       const typedKey = key as keyof T;
       const formGroupValue = values[typedKey];
@@ -147,64 +147,65 @@ class FormGroup<T> {
       };
     }, {});
     return formValues;
-  }
+  };
 
-  private _handleGroupValues(newValues: Partial<FormGroupValueProps<T>> = {}) {
+  private _handleGroupValues = (newValues: Partial<FormGroupValueProps<T>> = {}) => {
     Object.keys(this.form).forEach((key) => {
       const groupFormValue: FormValue<T[keyof T]> = this.form[key];
       const newValue: T[keyof T] = newValues[key];
       groupFormValue.setValue(newValue);
     });
     return this;
-  }
+  };
 
-  private getGroupValue(key: keyof T) {
+  private getGroupValue = (key: keyof T) => {
     return this.form[key];
-  }
+  };
 
-  undo() {
+  undo = () => {
     const storedForm = this.snapshots.undo(this.value());
     if (storedForm) {
       this.setValue(storedForm);
     }
     return this;
-  }
+  };
 
-  redo() {
+  redo = () => {
     const storedForm = this.snapshots.redo(this.value());
     if (storedForm) {
       this.setValue(storedForm);
     }
     return this;
-  }
+  };
 
-  setValue(newValues: Partial<FormGroupValueProps<T>> = {}) {
+  setValue = (newValues: Partial<FormGroupValueProps<T>> = {}) => {
     this.snapshots.push(this.value());
     this._handleGroupValues(newValues);
     return this;
-  }
+  };
 
-  setOptions(newOptions: Partial<FormGroupOptionProps> = {}) {
+  setOptions = (newOptions: Partial<FormGroupOptionProps> = {}) => {
     if (typeof newOptions.snapshotSize === 'number') {
       if (this.options.snapshotSize !== newOptions.snapshotSize) {
         this.snapshots = new MemoryQueue(this.snapshots.toArray(), newOptions.snapshotSize);
       }
     }
     Object.assign(this.options, newOptions);
-  }
+  };
 
-  value(): FormGroupValueProps<T> {
+  value = (): FormGroupValueProps<T> => {
     const formValues = Object.keys(this.form).reduce((acc, key) => {
+      const typedKey = key as keyof T;
+      const formValue = this.getGroupValue(typedKey).value();
       return {
         ...acc,
-        [key]: this.getGroupValue(key as keyof T).value(),
+        [typedKey]: formValue,
       };
-    }, {} as any);
-
+    }, {} as FormGroupValueProps<T>);
     return formValues;
-  }
+  };
 
-  toValue(): FormGroupToValueResponse<T> {
+  toValue = (): FormGroupToValueResponse<T> => {
     const formValues = Object.keys(this.form).reduce((acc, key) => {
       return {
         ...acc,
@@ -213,7 +214,7 @@ class FormGroup<T> {
     }, {} as any);
 
     return formValues;
-  }
+  };
 }
 
 export { FormGroup };
