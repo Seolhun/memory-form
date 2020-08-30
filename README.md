@@ -20,10 +20,13 @@ npm install @seolhun/memory-form-hooks
 ```
 
 ### Javascript
-```js
-import { FormValue, FormGroup } from '@seolhun/memory-form-core';
 
+
+```ts
 // FormValue
+
+import { FormValue } from '@seolhun/memory-form-core';
+
 const formValue = new FormValue<number>(0, {
   onValidation: (value: number) => {
     if (value > 10) {
@@ -38,24 +41,25 @@ formValue.hasError; // true
 formValue.error; // 'Over 10';
 formValue.toValue().hasError; // true
 formValue.toValue().error; // 'Over 10';
+```
 
+```ts
 // FormGroup
+
+import { FormGroup } from '@seolhun/memory-form-core';
+
 interface User {
   name: string;
   age: number;
 }
 
-let user = {
+const user = {
   name: 'seol',
   age: 20,
 };
 
-const formGroup = new FormGroup<User>({
-  name: {
-    value: user.name,
-  },
+const formGroup = new FormGroup<User>(user,
   age: {
-    value: user.age,
     onValidation: (newValue) => {
       if (newValue !== 20) {
         return 'Has Changed';
@@ -75,10 +79,11 @@ formGroup.toValue().age.error; // 'Has Changed';
 ```
 
 ### React
-```ts
-import { useFormValue, useFormGroup } from '@seolhun/memory-form-hooks';
 
-// FormValue
+```ts
+// useFormValue
+import { useFormValue } from '@seolhun/memory-form-hooks';
+
 const formValue = useFormValue<number>(0, {
   onValidation: (value: number) => {
     if (value > 10) {
@@ -93,24 +98,24 @@ formValue.hasError; // true
 formValue.error; // 'Over 10';
 formValue.toValue().hasError; // true
 formValue.toValue().error; // 'Over 10';
+```
 
-// FormGroup
+```ts
+import { useFormGroup } from '@seolhun/memory-form-hooks';
+
+// useFormGroup
 interface User {
   name: string;
   age: number;
 }
 
-let user = {
+const user = {
   name: 'seol',
   age: 20,
 };
 
-const formGroup = useFormGroup<User>({
-  name: {
-    value: user.name,
-  },
+const formGroup = useFormGroup<User>(user,
   age: {
-    value: user.age,
     onValidation: (newValue) => {
       if (newValue !== 20) {
         return 'Has Changed';
