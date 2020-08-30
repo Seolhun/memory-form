@@ -7,7 +7,7 @@
   },
   "name": "@seolhun/momory-form-core",
   "description": "To build momory-form-core modules",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "files": [
