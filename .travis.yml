@@ -22,8 +22,8 @@ script:
   - npm run lint
   - npm run test
 
-after_success:
-  - ./bin/npm-github-push.sh
+# after_success:
+#   - ./bin/npm-github-push.sh
 
 notifications:
   email: false
