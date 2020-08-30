@@ -23,7 +23,7 @@
     "version:test": "npm version prerelease --preid=alpha --from-git",
     "version:dev": "npm version prerelease --preid=beta --from-git",
     "version:prod": "npm version patch --from-git -m",
-    "prerelease": "lerna publish from-git",
+    "prerelease": "lerna publish from-git && npm run build",
     "release": "lerna publish",
     "prerelease:dev": "lerna publish from-git",
     "release:dev": "lerna publish --canary"
