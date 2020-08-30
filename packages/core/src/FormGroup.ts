@@ -171,7 +171,7 @@ class FormGroup<T> {
   };
 
   redo = () => {
-    const storedForm = this.snapshots.redo(this.value());
+    const storedForm = this.snapshots.redo();
     if (storedForm) {
       this.setValue(storedForm);
     }

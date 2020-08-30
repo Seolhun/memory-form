@@ -17,5 +17,7 @@ export interface Queue<T> {
 
   shift: Array<T>['shift'];
 
+  unshift: Array<T>['unshift'];
+
   toArray: () => Array<T>;
 }

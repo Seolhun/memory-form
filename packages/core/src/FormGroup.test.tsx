@@ -140,7 +140,7 @@ describe('FormGroup Test', () => {
     expect(formGroup.form.age.toValue().value).toBe(nextValue.age);
     expect(formGroup.form.name.toValue().originValue).toBe(originValue.name);
     expect(formGroup.form.name.toValue().value).toBe(nextValue.name);
-    expect(formGroup.snapshotsSize).toBe(3);
+    expect(formGroup.snapshotsSize).toBe(2);
 
     formGroup.redo();
     expect(formGroup.form.age.toValue().originValue).toBe(originValue.age);

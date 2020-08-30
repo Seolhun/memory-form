@@ -1,9 +1,13 @@
 import { Queue } from './Queue';
 import AbstractQueue from './AbstractQueue';
+import ArrayQueue from './ArrayQueue';
 
 class MemoryQueue<T> extends AbstractQueue<T> implements Queue<T> {
+  private histories: ArrayQueue<T>;
+
   constructor(items: T[] = [], maxSize: number = 20) {
     super(items, maxSize);
+    this.histories = new ArrayQueue<T>();
   }
 
   /**
@@ -13,18 +17,18 @@ class MemoryQueue<T> extends AbstractQueue<T> implements Queue<T> {
     if (!this.isEmpty) {
       const item = this.pop();
       if (item) {
-        this.push(currentItem);
+        this.histories.push(currentItem);
         return item;
       }
     }
     return null;
   }
 
-  redo(currentItem: T) {
-    if (!this.isEmpty) {
-      const item = this.pop();
+  redo() {
+    if (!this.histories.isEmpty) {
+      const item = this.histories.pop();
       if (item) {
-        this.push(currentItem);
+        this.push(item);
         return item;
       }
     }

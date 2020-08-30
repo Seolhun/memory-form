@@ -56,6 +56,10 @@ abstract class AbstractQueue<T> implements Queue<T> {
     return this.queue.shift();
   }
 
+  unshift() {
+    return this.queue.unshift();
+  }
+
   toArray() {
     return this.queue.map((item) => item);
   }

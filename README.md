@@ -45,7 +45,6 @@ formValue.toValue().error; // 'Over 10';
 
 ```ts
 // FormGroup
-
 import { FormGroup } from '@seolhun/memory-form';
 
 interface User {
@@ -76,6 +75,13 @@ Object.assign(user, {
 formGroup.setValue(user)
 formGroup.form.age.error; // 'Has Changed';
 formGroup.toValue().age.error; // 'Has Changed';
+
+// undo
+formGroup.undo();
+formGroup.form.age.toValue().value; // 20
+// redo
+formGroup.redo();
+formGroup.form.age.toValue().value; // 25
 ```
 
 ### React
