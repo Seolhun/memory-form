@@ -27,7 +27,7 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@seolhun/momory-form-core": "^0.0.4",
+    "@seolhun/memory-form": "^0.0.4",
     "core-js": "^3.6.5",
     "fast-deep-equal": "^3.1.3",
     "react": "^16.13.1"
@@ -71,9 +71,6 @@
     "jest": "^24.9.0",
     "react-test-renderer": "^16.13.1",
     "rollup": "^1.32.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-postcss": "^2.9.0",
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",

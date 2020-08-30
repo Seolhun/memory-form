@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormValue, FormValueValodationProps } from '@seolhun/momory-form-core';
+import { FormValue, FormValueValodationProps } from '@seolhun/memory-form';
 
 interface UseFormValueValidation<T = any> extends FormValueValodationProps<T> {}
 

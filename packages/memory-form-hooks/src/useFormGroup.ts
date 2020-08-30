@@ -5,7 +5,7 @@ import {
   FormGroupValueProps,
   FormGroupOptionProps,
   FormGroupValidationProps,
-} from '@seolhun/momory-form-core';
+} from '@seolhun/memory-form';
 
 function useFormGroup<T = any>(
   value: FormGroupValueProps<T>,

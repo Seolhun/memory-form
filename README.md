@@ -13,7 +13,7 @@
 
 ```bash
 # For JS
-npm install @seolhun/memory-form-core
+npm install @seolhun/memory-form
 
 # For React
 npm install @seolhun/memory-form-hooks
@@ -25,7 +25,7 @@ npm install @seolhun/memory-form-hooks
 ```ts
 // FormValue
 
-import { FormValue } from '@seolhun/memory-form-core';
+import { FormValue } from '@seolhun/memory-form';
 
 const formValue = new FormValue<number>(0, {
   onValidation: (value: number) => {
@@ -46,7 +46,7 @@ formValue.toValue().error; // 'Over 10';
 ```ts
 // FormGroup
 
-import { FormGroup } from '@seolhun/memory-form-core';
+import { FormGroup } from '@seolhun/memory-form';
 
 interface User {
   name: string;

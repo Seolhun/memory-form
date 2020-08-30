@@ -1,4 +1,4 @@
-# memory-form-core
+# memory-form
 
 [![Build Status](https://travis-ci.com/Seolhun/memory-form.svg?branch=master)](https://travis-ci.com/Seolhun/memory-form)
 
@@ -12,12 +12,12 @@
 
 ```bash
 # For JS
-npm install @seolhun/memory-form-core
+npm install @seolhun/memory-form
 ```
 
 ### Javascript
 ```js
-import { FormValue, FormGroup } from '@seolhun/memory-form-core';
+import { FormValue, FormGroup } from '@seolhun/memory-form';
 
 // FormValue
 const formValue = new FormValue<number>(0, {
