@@ -9,9 +9,10 @@ branches:
   only:
     - master
     - develop
-    - /^greenkeeper/.*$/
+    - /^release/.*$/
     - /^feature/.*$/
     - /^hotfix/.*$/
+    - /^snyk-fix-*$/
 
 before_install:
   - npm install
