@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Memory form</title>
+   </head>
+   <style>
+      form#memory-form {
+        display: table;
+      }
+      div#memory-form {
+        display: table-row;
+      }
+      label, input {
+        display: table-cell;
+        margin-bottom: 10px;
+      }
+      label {
+        padding-right: 10px;
+      }
+      label span.error {
+        color: red;
+      }
+      label span.dirty {
+        color: blue;
+      }
+   </style>
+   <body>
+      <form id='memory-form'>
+         <div>
+            <label for="name">
+              Name
+              <input name="name" value="seolhun" />
+              <span class="form-help"></span>
+            </label>
+         </div>
+         <div>
+            <label for="age">
+              Age
+              <input type="number" name="age" value="31" />
+              <span class="form-help"></span>
+            </label>
+         </div>
+         <div>
+            <button type="submit" id='submit'>
+              Submit!
+            </button>
+            <button type="button" id='undo'>
+              Undo
+            </button>
+            <button type="button" id='redo'>
+              Redo
+            </button>
+         </div>
+      </form>
+      <script src="../dist/index.iife.js"></script>
+      <script type="text/javascript">
+        (function () {
+          const formGroup = new window.MemoryForm.FormGroup({
+            name: 'seolhun',
+            age: 31,
+          }, {
+            name: {
+              onValidation: function(newValue) {
+                if (newValue === 'seolhun') {
+                  return 'Is Author';
+                }
+                return '';
+              },
+              initValidation: true,
+            },
+          });
+          const form = document.getElementById('memory-form');
+          const submitBtn = document.getElementById('submit');
+          const undoBtn = document.getElementById('undo');
+          const redoBtn = document.getElementById('redo');
+
+          if (formGroup.hasError) {
+            watchingFormError()
+          }
+
+          form.onchange = function(e) {
+            const name = e.target.name;
+            const value = e.target.value;
+            formGroup.setValue({
+              [name]: value,
+            });
+            setValueToForm()
+            watchingFormError();
+          }
+
+          form.onsubmit = function(e) {
+            e.preventDefault();
+
+            form.elements.name.value = formGroup.value().name
+            form.elements.age.value = formGroup.value().age
+            alert(JSON.stringify(formGroup.value()))
+          }
+
+          undoBtn.onclick = undo
+
+          redoBtn.onclick = redo
+
+          function undo(e) {
+            formGroup.undo()
+            setValueToForm()
+          }
+
+          function redo(e) {
+            formGroup.redo()
+            setValueToForm()
+          }
+
+          function watchingFormError() {
+            const formHelps = document.getElementsByClassName('form-help');
+            const formToValues = formGroup.toValue();
+            Object.keys(formToValues).map(function (key, index) {
+              if (formToValues.name.error) {
+                formHelps[index].classList.add('error')
+                formHelps[index].innerHTML = formGroup.toValue()[key].error;
+              } else if (formToValues[key].isDirty) {
+                formHelps[index].classList.add('dirty')
+                formHelps[index].innerHTML = 'Is Dirty'
+              } else {
+                formHelps[index].classList.remove('error', 'dirty')
+                formHelps[index].innerHTML = ''
+              }
+            });
+            submitBtn.disabled = formGroup.hasError;
+          }
+
+          function setValueToForm() {
+            const formValue = formGroup.value();
+            Object.keys(formValue).map(function (key) {
+              form.elements[key].value = formGroup.value()[key]
+            });
+          }
+        })();
+      </script>
+   </body>
+</html>
