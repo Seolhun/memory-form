@@ -7,7 +7,7 @@
   },
   "name": "@seolhun/memory-form",
   "description": "To build memory-form modules",
-  "version": "0.1.2-alpha.3",
+  "version": "0.1.2-alpha.4",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "files": [
