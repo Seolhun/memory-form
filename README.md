@@ -145,7 +145,7 @@ formGroup.toValue().age.error; // 'Has Changed';
 #### Build
 
 ```bash
-npm install
+npm ci
 npm run bs
 npm run build
 ```

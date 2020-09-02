@@ -4,7 +4,7 @@ describe('FormValue Test', () => {
   test('constructor only value', () => {
     const originValue: string = 'seolhun';
     const formValue = new FormValue(originValue);
-    expect(formValue.value()).toBe(originValue);
+    expect(formValue.value).toBe(originValue);
     expect(formValue.isDirty).toBe(false);
   });
 
@@ -20,7 +20,7 @@ describe('FormValue Test', () => {
     const formValue = new FormValue(originValue, {
       onValidation,
     });
-    expect(formValue.value()).toBe(originValue);
+    expect(formValue.value).toBe(originValue);
     expect(formValue.isDirty).toBe(false);
     expect(formValue.hasError).toBe(false);
     formValue.setValue(nextValue);
@@ -78,10 +78,10 @@ describe('FormValue Test', () => {
     const nextValue = 'shun';
     const formValue = new FormValue(originValue);
     formValue.setValue(nextValue);
-    expect(formValue.value()).toBe(nextValue);
+    expect(formValue.value).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     formValue.reset();
-    expect(formValue.value()).toBe(originValue);
+    expect(formValue.value).toBe(originValue);
   });
 
   test('isEquals', () => {
@@ -90,7 +90,7 @@ describe('FormValue Test', () => {
     const formValue = new FormValue(originValue);
     expect(formValue.isEqauls(nextValue)).toBe(false);
     formValue.setValue(nextValue);
-    expect(formValue.value()).toBe(nextValue);
+    expect(formValue.value).toBe(nextValue);
     expect(formValue.isDirty).toBe(true);
     expect(formValue.isEqauls(nextValue)).toBe(true);
   });
