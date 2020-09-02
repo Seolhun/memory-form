@@ -51,6 +51,10 @@ class FormValue<T = string> {
     return this.originValue !== this.currentValue;
   }
 
+  get value(): T {
+    return this.currentValue;
+  }
+
   /**
    * @name Methods
    */
@@ -75,10 +79,6 @@ class FormValue<T = string> {
     this.currentValue = newValue;
     this._handleValidation(newValue);
     return this;
-  }
-
-  value() {
-    return this.currentValue;
   }
 
   toValue(): FormValueToValueResponse<T> {

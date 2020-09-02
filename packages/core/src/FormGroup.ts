@@ -198,10 +198,10 @@ class FormGroup<T> {
   value = (): FormGroupValueProps<T> => {
     const formValues = Object.keys(this.form).reduce((acc, key) => {
       const typedKey = key as keyof T;
-      const formValue = this.getGroupValue(typedKey).value();
+      const formValue = this.getGroupValue(typedKey);
       return {
         ...acc,
-        [typedKey]: formValue,
+        [typedKey]: formValue.value,
       };
     }, {} as FormGroupValueProps<T>);
     return formValues;
@@ -209,9 +209,11 @@ class FormGroup<T> {
 
   toValue = (): FormGroupToValueResponse<T> => {
     const formValues = Object.keys(this.form).reduce((acc, key) => {
+      const typedKey = key as keyof T;
+      const formValue = this.getGroupValue(typedKey);
       return {
         ...acc,
-        [key]: this.getGroupValue(key as keyof T).toValue(),
+        [key]: formValue.toValue(),
       };
     }, {} as any);
 

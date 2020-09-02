@@ -29,7 +29,9 @@
     "release:dev": "lerna publish --canary"
   },
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "@types/jest": "^24.9.1",
+    "jest": "^24.9.0"
   },
   "workspaces": [
     "packages/*"
