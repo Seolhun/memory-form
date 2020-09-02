@@ -9,7 +9,7 @@ describe('useFormValue', () => {
     act(() => {
       result.current.setValue(10);
     });
-    expect(result.current.value()).toBe(10);
+    expect(result.current.value).toBe(10);
   });
 
   test('with Options', () => {
@@ -24,11 +24,11 @@ describe('useFormValue', () => {
         },
       }),
     );
-    expect(result.current.value()).toBe(0);
+    expect(result.current.value).toBe(0);
     act(() => {
       result.current.setValue(10);
     });
-    expect(result.current.value()).toBe(10);
+    expect(result.current.value).toBe(10);
     expect(result.current.isDirty).toBe(true);
     expect(result.current.hasError).toBe(true);
     expect(result.current.error).toBe(errorMessage);
