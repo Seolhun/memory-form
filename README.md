@@ -35,7 +35,7 @@ const formValue = new FormValue<number>(0, {
     return '';
   },
 });
-formValue.value(); // 0
+formValue.value; // 0
 formValue.setValue(11)
 formValue.hasError; // true
 formValue.error; // 'Over 10';
@@ -67,7 +67,7 @@ const formGroup = new FormGroup<User>(user,
     },
   },
 });
-formGroup.form.name.value(); // 'seol'
+formGroup.form.name.value; // 'seol'
 formGroup.form.age.toValue().value; // 20
 Object.assign(user, {
   age: 25,
@@ -130,7 +130,8 @@ const formGroup = useFormGroup<User>(user,
     },
   },
 });
-formGroup.form.name.value(); // 'seol'
+formGroup.value(); // { "name":"selhun", "age": 20 }
+formGroup.form.name.value; // 'seol'
 formGroup.form.age.toValue().value; // 20
 Object.assign(user, {
   age: 25,
