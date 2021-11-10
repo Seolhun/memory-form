@@ -5,8 +5,6 @@
     "lib": [
       "DOM",
       "ES2015",
-      "ES2016",
-      "ES2017",
       "ESNext"
     ],
     "moduleResolution": "Node",
@@ -63,8 +61,8 @@
     ]
   },
   "exclude": [
-    "node_modules/**",
-    "dist/**",
-    "test/**",
+    "node_modules",
+    "**/dist",
+    "**/test",
   ],
 }
