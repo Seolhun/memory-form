@@ -1,7 +1,7 @@
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
 import resolve from '@rollup/plugin-node-resolve';
+import typescript from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
@@ -23,6 +23,10 @@ export default {
       file: 'dist/index.esm.js',
     },
     {
+      format: 'iife',
+      file: 'dist/index.iife.js',
+    },
+    {
       format: 'cjs',
       file: 'dist/index.min.js',
       plugins: [terser()],
@@ -30,6 +34,11 @@ export default {
     {
       format: 'es',
       file: 'dist/index.esm.min.js',
+      plugins: [terser()],
+    },
+    {
+      format: 'iife',
+      file: 'dist/index.iife.min.js',
       plugins: [terser()],
     },
   ],
