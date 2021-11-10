@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "lerna": "^3.22.1",
-    "@types/jest": "^24.9.1",
+    "@types/jest": "^27.0.2",
     "jest": "^24.9.0"
   },
   "workspaces": [
